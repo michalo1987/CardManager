@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using CardManager.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,5 +14,7 @@ namespace CardManager.Data
         {
 
         }
+
+        public DbSet<ApplicationUser> ApplicationUser { get; set; }
     }
 }
