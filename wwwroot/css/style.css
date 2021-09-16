@@ -25,7 +25,7 @@
     color: black;
 }
 
-#dropDawnMenu :hover{
+#dropDawnMenu :hover {
     background-color: red;
     color: white;
 }
@@ -34,7 +34,7 @@
     color: black;
 }
 
-#icons :hover{
+#icons :hover {
     color: red;
 }
 
@@ -53,14 +53,15 @@ footer {
 
 .form-signin .form-floating:focus-within {
     z-index: 2;
+
 }
-  
+
 .form-signin input[type="email"] {
     margin-bottom: -1px;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
 }
-  
+
 .form-signin input[type="password"] {
     margin-bottom: 10px;
     border-top-left-radius: 0;
@@ -70,70 +71,179 @@ footer {
 /* CardManager leters animation */
 
 @import url(https://fonts.googleapis.com/css?family=Lato:900);
+
 *, *:before, *:after {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
+
 body {
-  font-family: 'Lato', sans-serif;
+    font-family: 'Lato', sans-serif;
 }
+
 div.foo {
-  width: 90%;
-  margin: 0 auto;
-  text-align: left;
+    width: 90%;
+    margin: 0 auto;
+    text-align: left;
 }
+
 .letter {
-  display: inline-block;
-  font-weight: 700;
-  font-size: 3em;
-  position: relative;
-  color: #cc0b0b;
-  transform-style: preserve-3d;
-  perspective: 400px;
-  z-index: 1;
+    display: inline-block;
+    font-weight: 700;
+    font-size: 3em;
+    position: relative;
+    color: #cc0b0b;
+    transform-style: preserve-3d;
+    perspective: 400px;
+    z-index: 1;
 }
+
 .letter:before, .letter:after {
-  position:absolute;
-  content: attr(data-letter);
-  transform-origin: top left;
-  top: 0;
-  left: 0;
+    position: absolute;
+    content: attr(data-letter);
+    transform-origin: top left;
+    top: 0;
+    left: 0;
 }
+
 .letter, .letter:before, .letter:after {
-  transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
 }
+
 .letter:before {
-  color: rgb(0, 0, 0);
-  text-shadow: 
-    -1px 0px 1px rgba(255,255,255,.8),
-    1px 0px 1px rgba(0,0,0,.8);
-  z-index: 3;
-  transform:
-    rotateX(0deg)
-    rotateY(-15deg)
-    rotateZ(0deg);
+    color: rgb(0, 0, 0);
+    text-shadow: 
+        -1px 0px 1px rgba(255,255,255,.8), 
+        1px 0px 1px rgba(0,0,0,.8);
+    z-index: 3;
+    transform: 
+        rotateX(0deg) 
+        rotateY(-15deg) 
+        rotateZ(0deg);
 }
+
 .letter:after {
-  color: rgba(0,0,0,.11);
-  z-index: 2;
-  transform:
-    scale(1.08,1)
-    rotateX(0deg)
-    rotateY(0deg)
-    rotateZ(0deg)
-    skew(0deg,1deg);
+    color: rgba(0,0,0,.11);
+    z-index: 2;
+    transform: 
+        scale(1.08,1) 
+        rotateX(0deg) 
+        rotateY(0deg) 
+        rotateZ(0deg) 
+        skew(0deg,1deg);
 }
+
 .letter:hover:before {
-  color: #000000;
-  transform:
-    rotateX(0deg)
-    rotateY(-40deg)
-    rotateZ(0deg);
+    color: #000000;
+    transform: 
+        rotateX(0deg) 
+        rotateY(-40deg) 
+        rotateZ(0deg);
 }
+
 .letter:hover:after {
-  transform:
-    scale(1.08,1)
-    rotateX(0deg)
-    rotateY(40deg)
-    rotateZ(0deg)
-    skew(0deg,22deg);
+    transform: 
+        scale(1.08,1) 
+        rotateX(0deg) 
+        rotateY(40deg) 
+        rotateZ(0deg) 
+        skew(0deg,22deg);
+}
+
+/* Technology used cards */
+
+.content-section {
+    margin: 0;
+    padding: 0;
+    min-height: 75vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: consolas;
+    background-color: #cc0b0b;
+}
+
+.container-cards {
+    width: 1000px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+}
+
+.container-cards .card {
+    position: relative;
+    cursor: pointer;
+    background-color: #cc0b0b;
+}
+
+.container-cards .card .face {
+    width: 300px;
+    height: 200px;
+    transition: 0.5s;
+}
+
+.container-cards .card .face.face1 {
+    position: relative;
+    background: #cc0b0b;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    transform: translateY(100px);
+}
+
+.container-cards .card:hover .face.face1 {
+    background: #333;
+    transform: translateY(0);
+}
+
+.container-cards .card .face.face1 .content {
+    transition: 0.5s;
+}
+
+.container-cards .card .face.face1 .content img {
+    max-width: 100px;
+}
+
+.container-cards .card .face.face1 .content h3 {
+    margin: 10px 0 0;
+    padding: 0;
+    color: #fff;
+    text-align: center;
+    font-size: 1.5em;
+}
+
+.container-cards .card .face.face2 {
+    position: relative;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    transform: translateY(-100px);
+}
+
+.container-cards .card:hover .face.face2 {
+    transform: translateY(0);
+}
+
+.container-cards .card .face.face2 .content p {
+    margin: 0;
+    padding: 0;
+}
+
+.container-cards .card .face.face2 .content a {
+    margin: 15px 0 0;
+    display:  inline-block;
+    text-decoration: none;
+    font-weight: 900;
+    color: #333;
+    padding: 5px;
+    border: 1px solid #333;
+}
+
+.container-cards .card .face.face2 .content a:hover {
+    background: #333;
+    color: #fff;
 }
