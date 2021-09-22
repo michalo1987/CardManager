@@ -78,11 +78,14 @@ footer {
 }
 
 #confirmpassword {
-    margin-bottom: 30px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
+}
+
+#registerButton {
+    margin-top: 30px;
 }
 
 /* Login form */
