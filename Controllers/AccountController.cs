@@ -53,6 +53,15 @@ namespace CardManager.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LogOff()
+        {
+            await _signInManager.SignOutAsync();
+
+            return RedirectToAction("Index", "Home");
+        }
+
         private void AddError(IdentityResult result)
         {
             foreach (var error in result.Errors)
