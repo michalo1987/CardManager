@@ -54,7 +54,13 @@ namespace CardManager.Controllers
         }
 
         [HttpGet]
-        [ValidateAntiForgeryToken]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> LogOff()
         {
             await _signInManager.SignOutAsync();
