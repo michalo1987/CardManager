@@ -29,13 +29,12 @@ namespace CardManager.Controllers
         public async Task<IActionResult> Register()
         {
             RegisterViewModel registerViewModel = new RegisterViewModel();
-
             return View(registerViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register([FromForm] RegisterViewModel model)
+        public async Task<IActionResult> Register([FromForm]RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -49,7 +48,6 @@ namespace CardManager.Controllers
                 }
                 AddError(result);
             }
-
             return View(model);
         }
 
@@ -59,12 +57,42 @@ namespace CardManager.Controllers
             return View();
         }
 
-        [HttpGet]
-        //[ValidateAntiForgeryToken]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login([FromForm]LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var userName = await _userManager.FindByEmailAsync(model.Email);
+                    var result = await _signInManager.PasswordSignInAsync(userName, model.Password, model.RememberMe, lockoutOnFailure: false);
+
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                        return View(model);
+                    }
+                }
+                catch (ArgumentNullException)
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return View(model);
+                }
+                
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogOff()
         {
             await _signInManager.SignOutAsync();
-
             return RedirectToAction("Index", "Home");
         }
 
