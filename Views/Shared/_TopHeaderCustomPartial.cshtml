@@ -2,11 +2,7 @@
 
 @inject SignInManager<IdentityUser> SignInManager
 
-@if (SignInManager.IsSignedIn(User))
-{
-
-}
-else
+@if (!SignInManager.IsSignedIn(User))
 {
     <div class="top-header py-2">
         <div class="container">
