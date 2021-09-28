@@ -16,5 +16,9 @@ namespace CardManager.Data
         }
 
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
+
+        public DbSet<Clinic> Clinics { get; set; }
+
+        public DbSet<ClinicGroup> ClinicGroups { get; set; }
     }
 }
