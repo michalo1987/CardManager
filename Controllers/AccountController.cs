@@ -35,7 +35,7 @@ namespace CardManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register([FromForm]RegisterViewModel model, string returnurl = null)
+        public async Task<IActionResult> Register([FromForm] RegisterViewModel model, string returnurl = null)
         {
             ViewData["ReturnUrl"] = returnurl;
             returnurl = returnurl ?? Url.Content("~/");
@@ -63,7 +63,7 @@ namespace CardManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login([FromForm]LoginViewModel model, string returnurl = null)
+        public async Task<IActionResult> Login([FromForm] LoginViewModel model, string returnurl = null)
         {
             ViewData["ReturnUrl"] = returnurl;
             returnurl = returnurl ?? Url.Content("~/");
@@ -72,11 +72,15 @@ namespace CardManager.Controllers
                 try
                 {
                     var userName = await _userManager.FindByEmailAsync(model.Email);
-                    var result = await _signInManager.PasswordSignInAsync(userName, model.Password, model.RememberMe, lockoutOnFailure: false);
+                    var result = await _signInManager.PasswordSignInAsync(userName, model.Password, model.RememberMe, lockoutOnFailure: true);
 
                     if (result.Succeeded)
                     {
                         return LocalRedirect(returnurl);
+                    }
+                    if (result.IsLockedOut)
+                    {
+                        return View("Lockout");
                     }
                     else
                     {
