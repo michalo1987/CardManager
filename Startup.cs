@@ -1,4 +1,5 @@
 using CardManager.Data;
+using CardManager.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -39,6 +40,8 @@ namespace CardManager
                 opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(30);
             });
             services.AddControllersWithViews();
+
+            services.AddScoped<ClinicNavigationHelper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
