@@ -105,6 +105,19 @@ namespace CardManager.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword([FromForm] ForgotPasswordViewModel model)
+        {
+            return View(model);
+        }
+
         private void AddError(IdentityResult result)
         {
             foreach (var error in result.Errors)
