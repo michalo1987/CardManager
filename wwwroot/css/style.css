@@ -57,10 +57,10 @@ footer {
 
 .form-register input[type="email"] {
     margin-bottom: -1px;
-    border-top-left-radius: 0px;
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
-    border-bottom-left-radius: 0px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
 }
 
 .form-register input[type="text"] {
@@ -112,11 +112,14 @@ footer {
 }
 
 .form-signin input[type="password"] {
-    margin-bottom: 10px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
+}
+
+#rememberMe {
+    margin-top: 15px;
 }
 
 /* CardManager leters animation */

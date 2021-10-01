@@ -14,7 +14,6 @@
                 <path fill-rule="evenodd" d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
             </svg>
             <h1 class="h3 mb-3 fw-normal fw-bold">Please sign in</h1>
-
             <div class="form-floating">
                 <input asp-for="Email" type="email" class="form-control" placeholder="Email address">
                 <label asp-for="Email" for="floatingInput">Email address</label>
@@ -25,8 +24,7 @@
                 <label asp-for="Password" for="floatingPassword">Password</label>
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-
-            <div class="checkbox mb-3">
+            <div class="checkbox mb-3" id="rememberMe">
                 <label asp-for="RememberMe">
                     <input asp-for="RememberMe" type="checkbox" value="remember-me" /> @Html.DisplayNameFor(m => m.RememberMe)
                 </label>
