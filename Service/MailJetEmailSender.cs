@@ -32,49 +32,18 @@ namespace CardManager.Service
             {
                 Resource = Send.Resource,
             }
-             .Property(Send.Messages, new JArray {
-             new JObject {
-      {
-       "From",
-       new JObject {
-        {"Email", "michalo1987@protonmail.com"},
-        {"Name", "Michal"}
-       }
-      }, {
-       "To",
-       new JArray {
-        new JObject {
-         {
-          "Email",
-          "michalo1987@protonmail.com"
-         }, {
-          "Name",
-          "Michal"
-         }
-        }
-       }
-      }, {
-       "Subject",
-       subject
-      }, {
-       "HTMLPart",
-       htmlMessage
-      },
-     }
-             });
+                .Property(Send.FromEmail, "michalo1987@protonmail.com")
+                .Property(Send.FromName, "Michal")
+                .Property(Send.Subject, subject)
+                .Property(Send.HtmlPart, htmlMessage)
+                .Property(Send.Recipients, new JArray
+                {
+                    new JObject
+                    {
+                        { "Email", email }
+                    }
+                });
             await client.PostAsync(request);
-            //if (response.IsSuccessStatusCode)
-            //{
-            //    Console.WriteLine(string.Format("Total: {0}, Count: {1}\n", response.GetTotal(), response.GetCount()));
-            //    Console.WriteLine(response.GetData());
-            //}
-            //else
-            //{
-            //    Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
-            //    Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
-            //    Console.WriteLine(response.GetData());
-            //    Console.WriteLine(string.Format("ErrorMessage: {0}\n", response.GetErrorMessage()));
-            //}
         }
     }
 }
