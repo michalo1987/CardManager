@@ -30,7 +30,13 @@ namespace CardManager
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnetion")));
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+            services.AddIdentity<IdentityUser, IdentityRole>(config =>
+            {
+                config.SignIn.RequireConfirmedAccount = true;
+            })
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
             services.AddTransient<IEmailSender, MailJetEmailSender>();
             services.Configure<IdentityOptions>(opt =>
             {
@@ -42,6 +48,7 @@ namespace CardManager
                 opt.Lockout.MaxFailedAccessAttempts = 3;
                 opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(30);
             });
+
             services.AddControllersWithViews();
             services.AddScoped<ClinicNavigationHelper>();
         }

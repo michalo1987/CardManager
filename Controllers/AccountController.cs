@@ -49,12 +49,46 @@ namespace CardManager.Controllers
 
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return LocalRedirect(returnurl);
+                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    {
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        var callbackurl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+
+                        await _emailSender.SendEmailAsync(model.Email, "Confirm your account - Identity Manager",
+                            "Please confirm your account by clicking here: <a href=\"" + callbackurl + "\">link</a>");
+                        return RedirectToAction("ActivateAccount");
+                    }
+                    else
+                    {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return LocalRedirect(returnurl);
+                    }
                 }
                 AddError(result);
             }
             return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        {
+            if (userId == null || code == null)
+            {
+                return View("Error");
+            }
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return View("Error");
+            }
+            var result = await _userManager.ConfirmEmailAsync(user, code);
+            return View(result.Succeeded ? "ConfirmEmail" : "Error");
+        }
+
+        [HttpGet]
+        public IActionResult ActivateAccount()
+        {
+            return View();
         }
 
         [HttpGet]
@@ -80,6 +114,11 @@ namespace CardManager.Controllers
                     if (result.Succeeded)
                     {
                         return LocalRedirect(returnurl);
+                    }
+                    if (result.IsNotAllowed)
+                    {
+                        ModelState.AddModelError(string.Empty, "Activate your account first pleaase.");
+                        return View(model);
                     }
                     if (result.IsLockedOut)
                     {
@@ -123,14 +162,14 @@ namespace CardManager.Controllers
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user == null)
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, "Invalid email attempt.");
                     return View(model);
                 }
 
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var callbackurl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
 
-                await _emailSender.SendEmailAsync(model.Email, "Reset Password - Identity Manager", 
+                await _emailSender.SendEmailAsync(model.Email, "Reset password - Identity Manager", 
                     "Please reset your password by clicking here: <a href=\"" + callbackurl + "\">link</a>");
                 return RedirectToAction("ForgotPasswordConfirmation");
             }
@@ -158,7 +197,7 @@ namespace CardManager.Controllers
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user == null)
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, "Invalid email attempt.");
                     return View(model);
                 }
 
