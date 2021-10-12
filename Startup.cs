@@ -49,6 +49,12 @@ namespace CardManager
                 opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(30);
             });
 
+            services.AddAuthentication().AddFacebook(options =>
+            {
+                options.AppId = "610862979905265";
+                options.AppSecret = "df82702e45ca7e86303630b15f69e132";
+            });
+
             services.AddControllersWithViews();
             services.AddScoped<ClinicNavigationHelper>();
         }

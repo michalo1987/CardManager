@@ -20,10 +20,12 @@ namespace CardManager.Helpers
         {
             var groupResult = new Dictionary<string, Dictionary<int, string>>();
             var groups = _context.ClinicGroups.Include("Clinics");
+
             foreach (var group in groups)
             {
                 var name = group.ShortName;
                 var clinics = new Dictionary<int, string>();
+
                 foreach (var clinic in group.Clinics)
                 {
                     clinics.Add(clinic.Id, clinic.Name);
