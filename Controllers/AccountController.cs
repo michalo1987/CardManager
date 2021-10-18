@@ -109,7 +109,7 @@ namespace CardManager.Controllers
 
                     if (result.Succeeded)
                     {
-                        return LocalRedirect(returnurl);
+                        return RedirectToAction("MainClinicPage");
                     }
                     if (result.IsNotAllowed)
                     {
@@ -133,6 +133,12 @@ namespace CardManager.Controllers
                 }
             }
             return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult MainClinicPage()
+        {
+            return View();
         }
 
         [HttpPost]
@@ -204,7 +210,7 @@ namespace CardManager.Controllers
                 }
                 AddErrors(result);
             }
-            return View();
+            return View(model);
         }
 
         [HttpGet]

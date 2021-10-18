@@ -13,8 +13,14 @@ namespace CardManager.Models
         [Required, StringLength(45)]
         public string Name { get; set; }
 
+        public int AddressId { get; set; }
+
+        public virtual Address Address { get; set; }
+
         public int ClinicGroupId { get; set; }
 
         public virtual ClinicGroup ClinicGroup { get; set; }
+
+        public virtual IList<PatientCard> PatientCards { get; set; }
     }
 }
