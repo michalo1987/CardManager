@@ -19,5 +19,13 @@ namespace CardManager.Models
 
         [Required]
         public double Price { get; set; }
+
+        public int CategoryId { get; set; }
+
+        public Category Category { get; set; }
+
+        public int BookDetailId { get; set; }
+
+        public BookDetail BookDetail { get; set; }
     }
 }
