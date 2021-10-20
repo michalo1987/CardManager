@@ -1,5 +1,4 @@
 using CardManager.Data;
-using CardManager.Helpers;
 using CardManager.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -56,7 +55,6 @@ namespace CardManager
             });
 
             services.AddControllersWithViews();
-            services.AddScoped<ClinicNavigationHelper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

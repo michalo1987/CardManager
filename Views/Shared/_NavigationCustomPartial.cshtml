@@ -1,8 +1,6 @@
-﻿@using CardManager.Helpers 
-@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Identity
 
 @inject SignInManager<IdentityUser> SignInManager
-@inject ClinicNavigationHelper ClinicNavigationHelper 
 
 <ul class="navbar-nav" id="navText">
     @if (SignInManager.IsSignedIn(User))
@@ -10,22 +8,18 @@
         <li class="navbar-nav">
             <a class="navbar-brand fw-bold">CardManager</a>
         </li>
-        foreach (var clinicLinkGroup in ClinicNavigationHelper.PopulateClinicLinks())
-        {
-            <li class="nav-item dropdown">
-                <a href="#@clinicLinkGroup.Key" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    @clinicLinkGroup.Key
-                </a>
-                <ul class="dropdown-menu" id="dropDawnMenu" aria-labelledby="navbarDropdownMenuLink">
-                    @foreach (var clinic in clinicLinkGroup.Value)
-                    {
-                        <li>
-                            <a asp-controller="" asp-action="" asp-route-clinicId="@clinic.Key" class="dropdown-item">@clinic.Value</a>
-                        </li>
-                    }
-                </ul>
-            </li>
-        }
+        <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                dropdown
+            </a>
+            <ul class="dropdown-menu" id="dropDawnMenu" aria-labelledby="navbarDropdownMenuLink">
+                <li><a class="dropdown-item" href="#">number1</a></li>
+                <li><a class="dropdown-item" href="#">number2</a></li>
+                <li><a class="dropdown-item" href="#">number3</a></li>
+                <li><a class="dropdown-item" href="#">number4</a></li>
+                <li><a class="dropdown-item" href="#">number5</a></li>
+            </ul>
+        </li>
         <li class="nav-item">
             <a href="#" class="nav-link">LoadFile</a>
         </li>

@@ -109,7 +109,7 @@ namespace CardManager.Controllers
 
                     if (result.Succeeded)
                     {
-                        return RedirectToAction("MainClinicPage");
+                        return RedirectToAction("MainUserPage");
                     }
                     if (result.IsNotAllowed)
                     {
@@ -136,7 +136,7 @@ namespace CardManager.Controllers
         }
 
         [HttpGet]
-        public IActionResult MainClinicPage()
+        public IActionResult MainUserPage()
         {
             return View();
         }
