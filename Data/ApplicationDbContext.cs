@@ -28,5 +28,13 @@ namespace CardManager.Data
         public DbSet<Author> Authors { get; set; }
 
         public DbSet<BookDetail> BookDetails { get; set; }
+
+        public DbSet<BookAuthor> BookAuthors { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<BookAuthor>().HasKey(ba => new { ba.BookId, ba.AuthorId });
+        }
     }
 }

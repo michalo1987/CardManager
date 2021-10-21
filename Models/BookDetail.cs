@@ -8,7 +8,7 @@ namespace CardManager.Models
 {
     public class BookDetail
     {
-        public int Id { get; set; }
+        public int BookDetailId { get; set; }
 
         [Required]
         public int NumberOfChapters { get; set; }

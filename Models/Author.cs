@@ -9,7 +9,7 @@ namespace CardManager.Models
 {
     public class Author
     {
-        public int Id { get; set; }
+        public int AuthorId { get; set; }
 
         [Required]
         public string FirstName { get; set; }
@@ -17,7 +17,7 @@ namespace CardManager.Models
         [Required]
         public string LastName { get; set; }
 
-        public DateTime DateBirth { get; set; }
+        public DateTime BirthDate { get; set; }
 
         public string Location { get; set; }
 
@@ -26,5 +26,7 @@ namespace CardManager.Models
         {
             get { return $"{FirstName} {LastName}"; }
         }
+
+        public ICollection<BookAuthor> BookAuthors { get; set; }
     }
 }
