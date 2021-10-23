@@ -1,9 +1,8 @@
 using CardManager.Data;
-using CardManager.Models;
 using CardManager.Service;
+using CardManager.Service.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -11,9 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CardManager
 {
@@ -30,7 +26,7 @@ namespace CardManager
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnetion")));
-            services.AddIdentity<ApplicationUser, IdentityRole>(config =>
+            services.AddIdentity<IdentityUser, IdentityRole>(config =>
             {
                 config.SignIn.RequireConfirmedAccount = true;
             })
@@ -54,6 +50,8 @@ namespace CardManager
                 options.AppId = "610862979905265";
                 options.AppSecret = "df82702e45ca7e86303630b15f69e132";
             });
+
+            services.AddScoped<ICategoryService, CategoryService>();
 
             services.AddControllersWithViews();
         }
