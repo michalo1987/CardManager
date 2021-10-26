@@ -52,6 +52,8 @@ namespace CardManager
             });
 
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IPublisherService, PublisherService>();
+            services.AddScoped<IAuthorService, AuthorService>();
 
             services.AddControllersWithViews();
         }
