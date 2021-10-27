@@ -16,8 +16,8 @@ namespace CardManager.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            _authorService.GetAll();
-            return View();
+            var result = _authorService.GetAll();
+            return View(result);
         }
 
         [HttpGet]

@@ -1,1 +1,86 @@
-﻿
+﻿@model Author
+
+@{
+    ViewData["Title"] = "Create Author";
+    Layout = "_Layout";
+}
+
+<form method="post">
+    <div class="container">
+        <div class="row p-3 border">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="AuthorId" />
+            @if (Model.AuthorId != 0)
+            {
+                ViewData["Title"] = "Edit Author";
+            }
+            <div class="col-12 border-bottom">
+                <h2 class="text-danger">@ViewData["Title"]</h2>
+            </div>
+            <div class="col-8 pt-4">
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="FirstName"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row mt-4 mb-3">
+                    <div class="col-4">
+                        <label asp-for="LastName"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row mt-4 mb-3">
+                    <div class="col-4">
+                        <label asp-for="BirthDate"></label>
+                    </div>
+                    <div class="col-8">
+                        @if (Model.AuthorId != 0)
+                        {
+                            <input asp-for="BirthDate" placeholder="dd/mm/yyyy" id="datepicker_dob" type="date" class="form-control" />
+                        }
+                        else
+                        {
+                            <input asp-for="BirthDate" value="" placeholder="dd/mm/yyyy" id="datepicker_dob" type="date" class="form-control" />
+                        }
+                        <span asp-validation-for="BirthDate" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row mt-4 mb-3">
+                    <div class="col-4">
+                        <label asp-for="Location"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Location" class="form-control" />
+                        <span asp-validation-for="Location" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row mt-4 mb-3">
+                    <div class="col-4 offset-4">
+                        @if (Model.AuthorId != 0)
+                        {
+                            <button type="submit" class="btn btn-danger form-control">Update</button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-danger form-control">Create</button>
+                        }
+                    </div>
+                    <div class="col-4">
+                        <a asp-controller="Author" asp-action="Index" class="btn btn-outline-danger form-control">Back to List</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

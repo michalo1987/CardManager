@@ -9,7 +9,7 @@ namespace CardManager.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        [Required]
+        [Required, StringLength(25)]
         public string Name { get; set; }
     }
 }

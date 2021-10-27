@@ -11,10 +11,10 @@ namespace CardManager.Models
     {
         public int AuthorId { get; set; }
 
-        [Required]
+        [Required, StringLength(25)]
         public string FirstName { get; set; }
 
-        [Required]
+        [Required, StringLength(25)]
         public string LastName { get; set; }
 
         public DateTime BirthDate { get; set; }
