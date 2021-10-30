@@ -9,7 +9,7 @@ namespace CardManager.Models
 {
     public class Book
     {
-        public int BookId { get; set; }
+        public int Id { get; set; }
 
         [Required]
         public string Title { get; set; }
@@ -21,8 +21,11 @@ namespace CardManager.Models
         [Required]
         public double Price { get; set; }
 
-        public int? BookDetailId { get; set; }
+        public int CategoryId { get; set; }
 
+        public Category Category { get; set; }
+
+        [NotMapped]
         public BookDetail BookDetail { get; set; }
 
         public int PublisherId { get; set; }

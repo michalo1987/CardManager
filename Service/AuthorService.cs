@@ -25,14 +25,14 @@ namespace CardManager.Service
 
         public bool Delete(int id)
         {
-            var author = _context.Authors.FirstOrDefault(a => a.AuthorId == id);
+            var author = _context.Authors.FirstOrDefault(a => a.Id == id);
             _context.Authors.Remove(author);
             return _context.SaveChanges() > 0;
         }
 
         public Author Get(int? id)
         {
-            return _context.Authors.FirstOrDefault(a => a.AuthorId == id);
+            return _context.Authors.FirstOrDefault(a => a.Id == id);
         }
 
         public IList<Author> GetAll()

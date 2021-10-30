@@ -8,7 +8,7 @@ namespace CardManager.Models
 {
     public class Publisher
     {
-        public int PublisherId { get; set; }
+        public int Id { get; set; }
 
         [Required, StringLength(25)]
         public string Name { get; set; }

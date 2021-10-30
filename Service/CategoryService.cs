@@ -1,6 +1,7 @@
 ﻿using CardManager.Data;
 using CardManager.Models;
 using CardManager.Service.Interfaces;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace CardManager.Service
 
         public Category Get(int? id)
         {
-            return _context.Categories.FirstOrDefault(c => c.CategoryId == id);
+            return _context.Categories.FirstOrDefault(c => c.Id == id);
         }
 
         public bool Create(Category category)
@@ -41,7 +42,7 @@ namespace CardManager.Service
 
         public bool Delete(int id)
         {
-            var category = _context.Categories.FirstOrDefault(c => c.CategoryId == id);
+            var category = _context.Categories.FirstOrDefault(c => c.Id == id);
             _context.Categories.Remove(category);
             return _context.SaveChanges() > 0;
         }
@@ -70,16 +71,30 @@ namespace CardManager.Service
 
         public bool RemoveMultiple2(IEnumerable<Category> categories)
         {
-            var catList = _context.Categories.OrderByDescending(c => c.CategoryId).Take(2).ToList();
+            var catList = _context.Categories.OrderByDescending(c => c.Id).Take(2).ToList();
             _context.Categories.RemoveRange(catList);
-            return _context.SaveChanges() >= 0;
+            return _context.SaveChanges() > 0;
         }
 
         public bool RemoveMultiple5(IEnumerable<Category> categories)
         {
-            var catList = _context.Categories.OrderByDescending(c => c.CategoryId).Take(5).ToList();
+            var catList = _context.Categories.OrderByDescending(c => c.Id).Take(5).ToList();
             _context.Categories.RemoveRange(catList);
-            return _context.SaveChanges() >= 0;
+            return _context.SaveChanges() > 0;
+        }
+
+        public IEnumerable<SelectListItem> CategoryList()
+        {
+            return _context.Categories.Select(i => new SelectListItem { Text = i.Name, Value = i.Id.ToString() });
+        }
+
+        public void PopulateCategory()
+        {
+            List<Book> objList = _context.Books.ToList();
+            foreach (var obj in objList)
+            {
+                _context.Entry(obj).Reference(p => p.Category).Load();
+            }
         }
     }
 }

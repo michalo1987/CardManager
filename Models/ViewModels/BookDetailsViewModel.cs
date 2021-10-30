@@ -1,24 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CardManager.Models
+namespace CardManager.Models.ViewModels
 {
-    public class BookDetail
+    public class BookDetailsViewModel
     {
-        public int Id { get; set; }
+        public int BookId { get; set; }
 
-        [Required]
+        public bool DetailsExists { get; set; }
+        
         public int NumberOfChapters { get; set; }
 
         public int NumberOfPages { get; set; }
 
         public double Weight { get; set; }
-
-        public int BookId { get; set; }
-
-        public Book Book { get; set; }
     }
 }

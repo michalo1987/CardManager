@@ -42,7 +42,7 @@ namespace CardManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (publisher.PublisherId == 0)
+                if (publisher.Id == 0)
                 {
                     _publisherService.Create(publisher);
                 }

@@ -42,7 +42,7 @@ namespace CardManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (author.AuthorId == 0)
+                if (author.Id == 0)
                 {
                     _authorService.Create(author);
                 }

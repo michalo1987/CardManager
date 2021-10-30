@@ -1,4 +1,5 @@
 ﻿using CardManager.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +18,9 @@ namespace CardManager.Service.Interfaces
         bool Update(Publisher publisher);
 
         bool Delete(int id);
+
+        IEnumerable<SelectListItem> PublisherList();
+
+        void PopulatePublisher();
     }
 }

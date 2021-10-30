@@ -14,7 +14,7 @@
                 <h2 class="text-danger">Authors List</h2>
             </div>
             <div class="col-2 text-right">
-                <a asp-action="Upsert" class="btn btn-outline-danger form-control">Create New</a>
+                <a asp-controller="Author" asp-action="Upsert" class="btn btn-outline-danger form-control">Create New</a>
             </div>
         </div>
         <br />
@@ -47,15 +47,15 @@
                                 @item.Location
                             </td>
                             <td>
-                                <a class="btn btn-danger text-white" asp-action="Upsert" asp-route-Id="@item.AuthorId">
+                                <a class="btn btn-danger text-white" asp-action="Upsert" asp-route-Id="@item.Id">
                                     Edit
                                 </a>
 
-                                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal-delete-author-@item.AuthorId">
+                                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal-delete-author-@item.Id">
                                     Delete
                                 </button>
 
-                                <div class="modal fade" id="exampleModal-delete-author-@item.AuthorId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="exampleModal-delete-author-@item.Id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -68,7 +68,7 @@
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                                                 <a class="btn btn-outline-danger text-right" asp-controller="Author" asp-action="Delete"
-                                                   asp-route-Id="@item.AuthorId">
+                                                   asp-route-Id="@item.Id">
                                                     Delete
                                                 </a>
                                             </div>

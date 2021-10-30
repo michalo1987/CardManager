@@ -9,7 +9,7 @@ namespace CardManager.Models
 {
     public class Author
     {
-        public int AuthorId { get; set; }
+        public int Id { get; set; }
 
         [Required, StringLength(25)]
         public string FirstName { get; set; }

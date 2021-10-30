@@ -1,10 +1,6 @@
 ﻿using CardManager.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CardManager.Data
 {
@@ -35,6 +31,7 @@ namespace CardManager.Data
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<BookAuthor>().HasKey(ba => new { ba.BookId, ba.AuthorId });
+            modelBuilder.Entity<BookDetail>().HasOne(bd => bd.Book).WithOne(b => b.BookDetail).HasForeignKey<BookDetail>(bd => bd.BookId);
         }
     }
 }

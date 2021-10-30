@@ -41,15 +41,15 @@
                                 @item.Location
                             </td>
                             <td>
-                                <a class="btn btn-danger text-white" asp-controller="Publisher" asp-action="Upsert" asp-route-Id="@item.PublisherId">
+                                <a class="btn btn-danger text-white" asp-controller="Publisher" asp-action="Upsert" asp-route-Id="@item.Id">
                                     Edit
                                 </a>
 
-                                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal-delete-publisher-@item.PublisherId">
+                                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal-delete-publisher-@item.Id">
                                     Delete
                                 </button>
 
-                                <div class="modal fade" id="exampleModal-delete-publisher-@item.PublisherId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="exampleModal-delete-publisher-@item.Id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -62,7 +62,7 @@
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                                                 <a class="btn btn-outline-danger text-right" asp-controller="Publisher" asp-action="Delete"
-                                                   asp-route-Id="@item.PublisherId">
+                                                   asp-route-Id="@item.Id">
                                                     Delete
                                                 </a>
                                             </div>

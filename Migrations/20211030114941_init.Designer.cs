@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CardManager.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211021155202_AddModelsToDb")]
-    partial class AddModelsToDb
+    [Migration("20211030114941_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,7 +23,7 @@ namespace CardManager.Migrations
 
             modelBuilder.Entity("CardManager.Models.Author", b =>
                 {
-                    b.Property<int>("AuthorId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -33,28 +33,33 @@ namespace CardManager.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
 
                     b.Property<string>("Location")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("AuthorId");
+                    b.HasKey("Id");
 
                     b.ToTable("Authors");
                 });
 
             modelBuilder.Entity("CardManager.Models.Book", b =>
                 {
-                    b.Property<int>("BookId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("BookDetailId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("ISBN")
@@ -72,11 +77,9 @@ namespace CardManager.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("BookId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("BookDetailId")
-                        .IsUnique()
-                        .HasFilter("[BookDetailId] IS NOT NULL");
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("PublisherId");
 
@@ -100,10 +103,13 @@ namespace CardManager.Migrations
 
             modelBuilder.Entity("CardManager.Models.BookDetail", b =>
                 {
-                    b.Property<int>("BookDetailId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
 
                     b.Property<int>("NumberOfChapters")
                         .HasColumnType("int");
@@ -114,29 +120,34 @@ namespace CardManager.Migrations
                     b.Property<double>("Weight")
                         .HasColumnType("float");
 
-                    b.HasKey("BookDetailId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId")
+                        .IsUnique();
 
                     b.ToTable("BookDetails");
                 });
 
             modelBuilder.Entity("CardManager.Models.Category", b =>
                 {
-                    b.Property<int>("CategoryId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(35)
+                        .HasColumnType("nvarchar(35)");
 
-                    b.HasKey("CategoryId");
+                    b.HasKey("Id");
 
                     b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("CardManager.Models.Genre", b =>
                 {
-                    b.Property<int>("GenreId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -144,14 +155,14 @@ namespace CardManager.Migrations
                     b.Property<string>("GenreName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("GenreId");
+                    b.HasKey("Id");
 
                     b.ToTable("Genres");
                 });
 
             modelBuilder.Entity("CardManager.Models.Publisher", b =>
                 {
-                    b.Property<int>("PublisherId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -162,9 +173,10 @@ namespace CardManager.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
 
-                    b.HasKey("PublisherId");
+                    b.HasKey("Id");
 
                     b.ToTable("Publishers");
                 });
@@ -377,16 +389,19 @@ namespace CardManager.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
             modelBuilder.Entity("CardManager.Models.Book", b =>
                 {
-                    b.HasOne("CardManager.Models.BookDetail", "BookDetail")
-                        .WithOne("Book")
-                        .HasForeignKey("CardManager.Models.Book", "BookDetailId");
+                    b.HasOne("CardManager.Models.Category", "Category")
+                        .WithMany("Books")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CardManager.Models.Publisher", "Publisher")
                         .WithMany("Books")
@@ -394,7 +409,7 @@ namespace CardManager.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("BookDetail");
+                    b.Navigation("Category");
 
                     b.Navigation("Publisher");
                 });
@@ -414,6 +429,17 @@ namespace CardManager.Migrations
                         .IsRequired();
 
                     b.Navigation("Author");
+
+                    b.Navigation("Book");
+                });
+
+            modelBuilder.Entity("CardManager.Models.BookDetail", b =>
+                {
+                    b.HasOne("CardManager.Models.Book", "Book")
+                        .WithOne("BookDetail")
+                        .HasForeignKey("CardManager.Models.BookDetail", "BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Book");
                 });
@@ -477,11 +503,13 @@ namespace CardManager.Migrations
             modelBuilder.Entity("CardManager.Models.Book", b =>
                 {
                     b.Navigation("BookAuthors");
+
+                    b.Navigation("BookDetail");
                 });
 
-            modelBuilder.Entity("CardManager.Models.BookDetail", b =>
+            modelBuilder.Entity("CardManager.Models.Category", b =>
                 {
-                    b.Navigation("Book");
+                    b.Navigation("Books");
                 });
 
             modelBuilder.Entity("CardManager.Models.Publisher", b =>

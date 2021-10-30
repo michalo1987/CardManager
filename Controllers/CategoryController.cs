@@ -45,7 +45,7 @@ namespace CardManager.Controllers
         {
             if (ModelState.IsValid) 
             {
-                if (category.CategoryId == 0)
+                if (category.Id == 0)
                 {
                     _categoryService.Create(category);
                 }
