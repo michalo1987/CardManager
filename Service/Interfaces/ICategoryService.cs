@@ -1,9 +1,8 @@
 ﻿using CardManager.Models;
+using CardManager.Service.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace CardManager.Service.Interfaces
 {
@@ -11,13 +10,13 @@ namespace CardManager.Service.Interfaces
     {
         IList<Category> GetAll();
 
-        Category Get(int? id);
+        CategoryModel GetCategory(int categoryId);
 
-        bool Create(Category category);
+        CategoryModel CreateCategory(CategoryModel model);
 
-        bool Update(Category category);
+        CategoryModel UpdateCategory(CategoryModel model);
 
-        bool Delete(int id);
+        CategoryModel DeleteCategory(int categoryId);
 
         bool CreateMultiple2(IList<Category> categories);
 

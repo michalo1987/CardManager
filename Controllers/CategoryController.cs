@@ -1,7 +1,8 @@
 ﻿using CardManager.Models;
+using CardManager.Models.ViewModels;
 using CardManager.Service.Interfaces;
+using CardManager.Service.Models;
 using Microsoft.AspNetCore.Mvc;
-
 using System.Collections.Generic;
 
 
@@ -24,44 +25,67 @@ namespace CardManager.Controllers
         }
 
         [HttpGet]
-        public IActionResult Upsert(int? id)
+        public IActionResult New()
         {
-            Category category = new Category();
-            if (id == null)
-            {
-                return View(category);
-            }
-            category = _categoryService.Get(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-            return View(category);
+            var categoryViewModel = new CategoryViewModel();
+            return View(categoryViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(Category category)
+        public IActionResult New(CategoryModel model)
         {
-            if (ModelState.IsValid) 
+            if (ModelState.IsValid)
             {
-                if (category.Id == 0)
+                if (model.CategoryId == 0)
                 {
-                    _categoryService.Create(category);
-                }
-                else
-                {
-                    _categoryService.Update(category);
+                    _categoryService.CreateCategory(model);
                 }
                 return RedirectToAction("Index");
             }
-            return View(category);
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var category = _categoryService.GetCategory(id);
+            if (category == null)
+            {
+                return NotFound($"Category ID = {id} does not exists.");
+            }
+
+            var categoryViewModel = new CategoryViewModel()
+            {
+                CategoryId = category.CategoryId,
+                Name = category.Name,
+            };
+
+            return View(categoryViewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit([FromForm]CategoryViewModel categoryViewModel)
+        {
+            var model = new CategoryModel()
+            {
+                CategoryId = categoryViewModel.CategoryId,
+                Name = categoryViewModel.Name,
+            };
+
+            if (ModelState.IsValid)
+            {
+                _categoryService.UpdateCategory(model);
+            }
+
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            _categoryService.Delete(id);
+            _categoryService.DeleteCategory(id);
             return RedirectToAction("Index");
         }
 

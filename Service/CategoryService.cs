@@ -1,11 +1,12 @@
 ﻿using CardManager.Data;
 using CardManager.Models;
+using CardManager.Models.ViewModels;
 using CardManager.Service.Interfaces;
+using CardManager.Service.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace CardManager.Service
 {
@@ -23,28 +24,53 @@ namespace CardManager.Service
             return _context.Categories.ToList();
         }
 
-        public Category Get(int? id)
+        public CategoryModel GetCategory(int categoryId)
         {
-            return _context.Categories.FirstOrDefault(c => c.Id == id);
+            var category = _context.Categories
+                .FirstOrDefault(c => c.Id == categoryId);
+
+            return category != null
+                ? MapFromEntity(category)
+                : null;
         }
 
-        public bool Create(Category category)
+        public CategoryModel CreateCategory(CategoryModel model)
         {
+            var category = new Category()
+            {
+                Name = model.Name,
+            };
+
             _context.Categories.Add(category);
-            return _context.SaveChanges() > 0;
+            _context.SaveChanges();
+
+            return model;
         }
 
-        public bool Update(Category category)
+        public CategoryModel UpdateCategory(CategoryModel model)
         {
+            var category = _context.Categories
+                .SingleOrDefault(c => c.Id == model.CategoryId);
+
+            category.Name = model.Name;
+
             _context.Categories.Update(category);
-            return _context.SaveChanges() > 0;
+            _context.SaveChanges();
+
+            return model;
         }
 
-        public bool Delete(int id)
+        public CategoryModel DeleteCategory(int id)
         {
-            var category = _context.Categories.FirstOrDefault(c => c.Id == id);
+            var category = _context.Categories
+                .SingleOrDefault(c => c.Id == id);
+
             _context.Categories.Remove(category);
-            return _context.SaveChanges() > 0;
+            _context.SaveChanges();
+
+            return category != null
+                ? MapFromEntity(category)
+                : null;
         }
 
         public bool CreateMultiple2(IList<Category> categories)
@@ -55,6 +81,7 @@ namespace CardManager.Service
                 catList.Add(new Category { Name = Guid.NewGuid().ToString() });
             }
             _context.Categories.AddRange(catList);
+
             return _context.SaveChanges() > 0;
         }
 
@@ -66,6 +93,7 @@ namespace CardManager.Service
                 catList.Add(new Category { Name = Guid.NewGuid().ToString() });
             }
             _context.Categories.AddRange(catList);
+
             return _context.SaveChanges() > 0;
         }
 
@@ -73,6 +101,7 @@ namespace CardManager.Service
         {
             var catList = _context.Categories.OrderByDescending(c => c.Id).Take(2).ToList();
             _context.Categories.RemoveRange(catList);
+
             return _context.SaveChanges() > 0;
         }
 
@@ -80,12 +109,14 @@ namespace CardManager.Service
         {
             var catList = _context.Categories.OrderByDescending(c => c.Id).Take(5).ToList();
             _context.Categories.RemoveRange(catList);
+
             return _context.SaveChanges() > 0;
         }
 
         public IEnumerable<SelectListItem> CategoryList()
         {
-            return _context.Categories.Select(i => new SelectListItem { Text = i.Name, Value = i.Id.ToString() });
+            return _context.Categories
+                .Select(i => new SelectListItem { Text = i.Name, Value = i.Id.ToString() });
         }
 
         public void PopulateCategory()
@@ -95,6 +126,15 @@ namespace CardManager.Service
             {
                 _context.Entry(obj).Reference(p => p.Category).Load();
             }
+        }
+
+        private static CategoryModel MapFromEntity(Category entity)
+        {
+            return new CategoryModel()
+            {
+                CategoryId = entity.Id,
+                Name = entity.Name,
+            };
         }
     }
 }

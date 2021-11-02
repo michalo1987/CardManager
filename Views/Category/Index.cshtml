@@ -15,7 +15,7 @@
             </div>
 
             <div class="col-3 text-right">
-                <a asp-controller="Category" asp-action="Upsert" class="btn btn-outline-danger form-control">Create New</a>
+                <a asp-controller="Category" asp-action="New" class="btn btn-outline-danger form-control">Create New</a>
             </div>
         </div>
         <div class="row">
@@ -50,7 +50,7 @@
                                 @item.Name
                             </td>
                             <td>
-                                <a class="btn btn-danger text-white" asp-controller="Category" asp-action="Upsert" asp-route-Id="@item.Id">
+                                <a class="btn btn-danger text-white" asp-controller="Category" asp-action="Edit" asp-route-Id="@item.Id">
                                     Edit
                                 </a>
 
