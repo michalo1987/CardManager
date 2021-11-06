@@ -6,14 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CardManager.Controllers
 {
-    public class BooksController : Controller
+    public class BookController : Controller
     {
         private readonly IBookService _bookService;
         private readonly IPublisherService _publisherService;
         private readonly ICategoryService _categoryService;
         private readonly IBookDetailService _bookDetailService;
 
-        public BooksController(IBookService bookService, IPublisherService publisherService, ICategoryService categoryService,
+        public BookController(IBookService bookService, IPublisherService publisherService, ICategoryService categoryService,
             IBookDetailService bookDetailService)
         {
             _bookService = bookService;

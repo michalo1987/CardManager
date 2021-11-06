@@ -5,7 +5,7 @@
     var currentBookId = Model.Book?.Id ?? 0;
 }
 
-<form method="post" asp-action="Upsert" asp-controller="Books">
+<form method="post" asp-action="Upsert" asp-controller="Book">
     <div class="container">
         <div class="row p-3 border">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -80,7 +80,7 @@
                         }
                     </div>
                     <div class="col-4">
-                        <a asp-action="Index" class="btn btn-outline-danger form-control">Back to List</a>
+                        <a asp-controller="Book" asp-action="Index" class="btn btn-outline-danger form-control">Back to List</a>
                     </div>
                 </div>
             </div>
