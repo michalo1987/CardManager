@@ -8,11 +8,11 @@ namespace CardManager.Service.Interfaces
 {
     public interface ICategoryService
     {
-        IList<Category> GetAll();
+        IEnumerable<CategoryModel> GetAll();
 
         CategoryModel GetCategory(int categoryId);
 
-        CategoryModel CreateCategory(CategoryModel model);
+        CategoryModel CreateCategory(string categoryName);
 
         CategoryModel UpdateCategory(CategoryModel model);
 

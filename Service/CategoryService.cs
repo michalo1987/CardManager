@@ -1,6 +1,5 @@
 ﻿using CardManager.Data;
 using CardManager.Models;
-using CardManager.Models.ViewModels;
 using CardManager.Service.Interfaces;
 using CardManager.Service.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -19,9 +18,21 @@ namespace CardManager.Service
             _context = context;
         }
 
-        public IList<Category> GetAll()
+        public IEnumerable<CategoryModel> GetAll()
         {
-            return _context.Categories.ToList();
+            var catModelList = new List<CategoryModel>();
+            var catlist = _context.Categories.ToList();
+
+            foreach (var model in catlist)
+            {
+                var catModel = new CategoryModel()
+                {
+                    CategoryId = model.Id,
+                    Name = model.Name
+                };
+                catModelList.Add(catModel);
+            }
+            return catModelList;
         }
 
         public CategoryModel GetCategory(int categoryId)
@@ -34,17 +45,21 @@ namespace CardManager.Service
                 : null;
         }
 
-        public CategoryModel CreateCategory(CategoryModel model)
+        public CategoryModel CreateCategory(string categoryName)
         {
             var category = new Category()
             {
-                Name = model.Name,
+                Name = categoryName
             };
 
             _context.Categories.Add(category);
             _context.SaveChanges();
 
-            return model;
+            return new CategoryModel()
+            {
+                CategoryId = category.Id,
+                Name = category.Name
+            };
         }
 
         public CategoryModel UpdateCategory(CategoryModel model)

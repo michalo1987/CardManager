@@ -20,30 +20,39 @@ namespace CardManager.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var result = _categoryService.GetAll();
-            return View(result);
+            var catViewModel = new List<CategoryViewModel>();
+            var catModel = _categoryService.GetAll();
+
+            foreach (var model in catModel)
+            {
+                var viewModel = new CategoryViewModel()
+                {
+                    CategoryId = model.CategoryId,
+                    Name = model.Name
+                };
+                catViewModel.Add(viewModel);
+            }
+            return View(catViewModel);
         }
 
         [HttpGet]
         public IActionResult New()
         {
-            var categoryViewModel = new CategoryViewModel();
-            return View(categoryViewModel);
+            var viewModel = new CategoryViewModel();
+            return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult New(CategoryModel model)
+        public IActionResult New([FromForm]CategoryViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                if (model.CategoryId == 0)
-                {
-                    _categoryService.CreateCategory(model);
-                }
+                _categoryService.CreateCategory(viewModel.Name);
+
                 return RedirectToAction("Index");
             }
-            return View(model);
+            return View(viewModel);
         }
 
         [HttpGet]
@@ -55,23 +64,23 @@ namespace CardManager.Controllers
                 return NotFound($"Category ID = {id} does not exists.");
             }
 
-            var categoryViewModel = new CategoryViewModel()
+            var viewModel = new CategoryViewModel()
             {
                 CategoryId = category.CategoryId,
                 Name = category.Name,
             };
 
-            return View(categoryViewModel);
+            return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromForm]CategoryViewModel categoryViewModel)
+        public IActionResult Edit([FromForm]CategoryViewModel viewModel)
         {
             var model = new CategoryModel()
             {
-                CategoryId = categoryViewModel.CategoryId,
-                Name = categoryViewModel.Name,
+                CategoryId = viewModel.CategoryId,
+                Name = viewModel.Name,
             };
 
             if (ModelState.IsValid)
