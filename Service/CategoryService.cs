@@ -75,10 +75,10 @@ namespace CardManager.Service
             return model;
         }
 
-        public CategoryModel DeleteCategory(int id)
+        public CategoryModel DeleteCategory(int categoryId)
         {
             var category = _context.Categories
-                .SingleOrDefault(c => c.Id == id);
+                .SingleOrDefault(c => c.Id == categoryId);
 
             _context.Categories.Remove(category);
             _context.SaveChanges();

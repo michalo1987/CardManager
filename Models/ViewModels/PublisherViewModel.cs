@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 
 namespace CardManager.Models.ViewModels
 {
-    public class CategoryViewModel
+    public class PublisherViewModel
     {
-        public int CategoryId { get; set; }
+        public int PublisherId { get; set; }
 
-        [Required, StringLength(50)]
+        [Required, StringLength(25)]
         public string Name { get; set; }
+
+        [Required]
+        public string Location { get; set; }
     }
 }

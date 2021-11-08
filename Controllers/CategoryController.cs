@@ -49,7 +49,6 @@ namespace CardManager.Controllers
             if (ModelState.IsValid)
             {
                 _categoryService.CreateCategory(viewModel.Name);
-
                 return RedirectToAction("Index");
             }
             return View(viewModel);
@@ -69,7 +68,6 @@ namespace CardManager.Controllers
                 CategoryId = category.CategoryId,
                 Name = category.Name,
             };
-
             return View(viewModel);
         }
 

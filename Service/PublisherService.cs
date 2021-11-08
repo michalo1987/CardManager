@@ -1,11 +1,10 @@
 ﻿using CardManager.Data;
 using CardManager.Models;
 using CardManager.Service.Interfaces;
+using CardManager.Service.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace CardManager.Service
 {
@@ -18,27 +17,64 @@ namespace CardManager.Service
             _context = context;
         }
 
-        public bool Create(Publisher publisher)
+        public PublisherModel CreatePublisher(string name, string location)
         {
+            var publisher = new Publisher()
+            {
+                Name = name,
+                Location = location
+            };
+
             _context.Publishers.Add(publisher);
-            return _context.SaveChanges() > 0;
+            _context.SaveChanges();
+
+            return new PublisherModel()
+            {
+                PublisherId = publisher.Id,
+                Name = publisher.Name,
+                Location = publisher.Location
+            };
         }
 
-        public bool Delete(int id)
+        public PublisherModel DeletePublisher(int publisherId)
         {
-            var publisher = _context.Publishers.FirstOrDefault(p => p.Id == id);
+            var publisher = _context.Publishers.
+                FirstOrDefault(p => p.Id == publisherId);
+
             _context.Publishers.Remove(publisher);
-            return _context.SaveChanges() > 0;
+            _context.SaveChanges();
+
+            return publisher != null
+                ? MapFromEntity(publisher)
+                : null;
         }
 
-        public Publisher Get(int? id)
+        public PublisherModel GetPublisher(int publisherId)
         {
-            return _context.Publishers.FirstOrDefault(p => p.Id == id);
+            var publisher = _context.Publishers
+                .FirstOrDefault(p => p.Id == publisherId);
+
+            return publisher != null
+                ? MapFromEntity(publisher)
+                : null;
         }
 
-        public IList<Publisher> GetAll()
+        public IEnumerable<PublisherModel> GetAll()
         {
-            return _context.Publishers.ToList();
+            var pubModelList = new List<PublisherModel>();
+            var pubList = _context.Publishers.ToList();
+
+            foreach (var model in pubList)
+            {
+                var pubModel = new PublisherModel()
+                {
+                    PublisherId = model.Id,
+                    Name = model.Name,
+                    Location = model.Location
+                };
+                pubModelList.Add(pubModel);
+            }
+            return pubModelList;
         }
 
         public void PopulatePublisher()
@@ -52,13 +88,32 @@ namespace CardManager.Service
 
         public IEnumerable<SelectListItem> PublisherList()
         {
-            return _context.Publishers.Select(i => new SelectListItem { Text = i.Name, Value = i.Id.ToString() });
+            return _context.Publishers
+                .Select(p => new SelectListItem { Text = p.Name, Value = p.Id.ToString() });
         }
 
-        public bool Update(Publisher publisher)
+        public PublisherModel UpdatePublisher(PublisherModel model)
         {
+            var publisher = _context.Publishers
+                .SingleOrDefault(p => p.Id == model.PublisherId);
+
+            publisher.Name = model.Name;
+            publisher.Location = model.Location;
+                
             _context.Publishers.Update(publisher);
-            return _context.SaveChanges() > 0;
+            _context.SaveChanges();
+
+            return model;
+        }
+
+        private static PublisherModel MapFromEntity(Publisher entity)
+        {
+            return new PublisherModel()
+            {
+                PublisherId = entity.Id,
+                Name = entity.Name,
+                Location = entity.Location
+            };
         }
     }
 }

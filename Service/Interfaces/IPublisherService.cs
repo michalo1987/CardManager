@@ -1,23 +1,21 @@
 ﻿using CardManager.Models;
+using CardManager.Service.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CardManager.Service.Interfaces
 {
     public interface IPublisherService
     {
-        IList<Publisher> GetAll();
+        IEnumerable<PublisherModel> GetAll();
 
-        Publisher Get(int? id);
+        PublisherModel GetPublisher(int publisherId);
 
-        bool Create(Publisher publisher);
+        PublisherModel CreatePublisher(string publisherName, string publisherLocation);
 
-        bool Update(Publisher publisher);
+        PublisherModel UpdatePublisher(PublisherModel model);
 
-        bool Delete(int id);
+        PublisherModel DeletePublisher(int publisherId);
 
         IEnumerable<SelectListItem> PublisherList();
 

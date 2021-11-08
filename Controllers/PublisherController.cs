@@ -1,6 +1,8 @@
-﻿using CardManager.Models;
+﻿using CardManager.Models.ViewModels;
 using CardManager.Service.Interfaces;
+using CardManager.Service.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace CardManager.Controllers
 {
@@ -16,49 +18,81 @@ namespace CardManager.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var result = _publisherService.GetAll();
-            return View(result);
+            var pubViewModel = new List<PublisherViewModel>();
+            var pubModel = _publisherService.GetAll();
+
+            foreach (var model in pubModel)
+            {
+                var viewModel = new PublisherViewModel()
+                {
+                    PublisherId = model.PublisherId,
+                    Name = model.Name,
+                    Location = model.Location
+                };
+                pubViewModel.Add(viewModel);
+            }
+            return View(pubViewModel);
         }
 
         [HttpGet]
-        public IActionResult Upsert(int? id)
+        public IActionResult New()
         {
-            Publisher publisher = new Publisher();
-            if (id == null)
-            {
-                return View(publisher);
-            }
-            publisher = _publisherService.Get(id);
-            if (publisher == null)
-            {
-                return NotFound();
-            }
-            return View(publisher);
+            var viewModel = new PublisherViewModel();
+            return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(Publisher publisher)
+        public IActionResult New([FromForm]PublisherViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                if (publisher.Id == 0)
-                {
-                    _publisherService.Create(publisher);
-                }
-                else
-                {
-                    _publisherService.Update(publisher);
-                }
+                _publisherService.CreatePublisher(viewModel.Name, viewModel.Location);
                 return RedirectToAction("Index");
             }
-            return View(publisher);
+            return View(viewModel);
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var publisher = _publisherService.GetPublisher(id);
+            if (publisher == null)
+            {
+                return NotFound($"Publisher ID = {id} does not exists.");
+            }
+
+            var viewModel = new PublisherViewModel()
+            {
+                PublisherId = publisher.PublisherId,
+                Name = publisher.Name,
+                Location = publisher.Location
+            };
+            return View(viewModel); 
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit([FromForm]PublisherViewModel viewModel)
+        {
+            var model = new PublisherModel()
+            {
+                PublisherId = viewModel.PublisherId,
+                Name = viewModel.Name,
+                Location = viewModel.Location
+            };
+
+            if (ModelState.IsValid)
+            {
+                _publisherService.UpdatePublisher(model);
+            }
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            _publisherService.Delete(id);
+            _publisherService.DeletePublisher(id);
             return RedirectToAction("Index");
         }
     }
