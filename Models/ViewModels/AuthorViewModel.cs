@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CardManager.Models
+namespace CardManager.Models.ViewModels
 {
-    public class Author
+    public class AuthorViewModel
     {
-        public int Id { get; set; }
+        public int AuthorId { get; set; }
 
         [Required, StringLength(25)]
         public string FirstName { get; set; }
@@ -19,12 +18,9 @@ namespace CardManager.Models
 
         public string Location { get; set; }
 
-        [NotMapped]
         public string FullName
         {
             get { return $"{FirstName} {LastName}"; }
         }
-
-        public ICollection<BookAuthor> BookAuthors { get; set; }
     }
 }

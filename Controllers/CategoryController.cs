@@ -20,19 +20,20 @@ namespace CardManager.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var catViewModel = new List<CategoryViewModel>();
-            var catModel = _categoryService.GetAll();
+            var catViewModelList = new List<CategoryViewModel>();
+            var catModelList = _categoryService.GetAll();
 
-            foreach (var model in catModel)
+            foreach (var model in catModelList)
             {
                 var viewModel = new CategoryViewModel()
                 {
                     CategoryId = model.CategoryId,
                     Name = model.Name
                 };
-                catViewModel.Add(viewModel);
+                catViewModelList.Add(viewModel);
             }
-            return View(catViewModel);
+
+            return View(catViewModelList);
         }
 
         [HttpGet]
@@ -51,6 +52,7 @@ namespace CardManager.Controllers
                 _categoryService.CreateCategory(viewModel.Name);
                 return RedirectToAction("Index");
             }
+
             return View(viewModel);
         }
 
@@ -68,6 +70,7 @@ namespace CardManager.Controllers
                 CategoryId = category.CategoryId,
                 Name = category.Name,
             };
+
             return View(viewModel);
         }
 

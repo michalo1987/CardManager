@@ -18,10 +18,10 @@ namespace CardManager.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var pubViewModel = new List<PublisherViewModel>();
-            var pubModel = _publisherService.GetAll();
+            var pubViewModelList = new List<PublisherViewModel>();
+            var pubModelList = _publisherService.GetAll();
 
-            foreach (var model in pubModel)
+            foreach (var model in pubModelList)
             {
                 var viewModel = new PublisherViewModel()
                 {
@@ -29,9 +29,9 @@ namespace CardManager.Controllers
                     Name = model.Name,
                     Location = model.Location
                 };
-                pubViewModel.Add(viewModel);
+                pubViewModelList.Add(viewModel);
             }
-            return View(pubViewModel);
+            return View(pubViewModelList);
         }
 
         [HttpGet]

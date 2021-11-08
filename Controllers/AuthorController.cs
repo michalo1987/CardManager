@@ -1,6 +1,8 @@
-﻿using CardManager.Models;
+﻿using CardManager.Models.ViewModels;
 using CardManager.Service.Interfaces;
+using CardManager.Service.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace CardManager.Controllers
 {
@@ -16,49 +18,91 @@ namespace CardManager.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var result = _authorService.GetAll();
-            return View(result);
+            var autViewModelList = new List<AuthorViewModel>();
+            var autModelList = _authorService.GetAll();
+
+            foreach (var model in autModelList)
+            {
+                var viewModel = new AuthorViewModel()
+                {
+                    AuthorId = model.AuthorId,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    BirthDate = model.BirthDate,
+                    Location = model.Location
+                };
+                autViewModelList.Add(viewModel);
+            }
+
+            return View(autViewModelList);
         }
 
         [HttpGet]
-        public IActionResult Upsert(int? id)
+        public IActionResult New()
         {
-            Author author = new Author();
-            if (id == null)
-            {
-                return View(author);
-            }
-            author = _authorService.Get(id);
-            if (author == null)
-            {
-                return NotFound();
-            }
-            return View(author);
+            var viewModel = new AuthorViewModel();
+            return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(Author author)
+        public IActionResult New([FromForm]AuthorViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                if (author.Id == 0)
-                {
-                    _authorService.Create(author);
-                }
-                else
-                {
-                    _authorService.Update(author);
-                }
+                _authorService.CreateAuthor(viewModel.FirstName, viewModel.LastName, viewModel.BirthDate, viewModel.Location);
                 return RedirectToAction("Index");
             }
-            return View(author);
+
+            return View(viewModel);
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var author = _authorService.GetAuthor(id);
+            if (author == null)
+            {
+                return NotFound($"Author ID = {id} does not exists.");
+            }
+
+            var viewModel = new AuthorViewModel()
+            {
+                AuthorId = author.AuthorId,
+                FirstName = author.FirstName,
+                LastName = author.LastName,
+                BirthDate = author.BirthDate,
+                Location = author.Location
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit([FromForm]AuthorViewModel viewModel)
+        {
+            var model = new AuthorModel()
+            {
+                AuthorId = viewModel.AuthorId,
+                FirstName = viewModel.FirstName,
+                LastName = viewModel.LastName,
+                BirthDate = viewModel.BirthDate,
+                Location = viewModel.Location
+            };
+
+            if (ModelState.IsValid)
+            {
+                _authorService.UpdateAuthor(model);
+            }
+
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            _authorService.Delete(id);
+            _authorService.DeleteAuthor(id);
             return RedirectToAction("Index");
         }
     }

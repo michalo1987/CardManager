@@ -1,10 +1,10 @@
 ﻿using CardManager.Data;
 using CardManager.Models;
 using CardManager.Service.Interfaces;
+using CardManager.Service.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace CardManager.Service
 {
@@ -17,33 +17,97 @@ namespace CardManager.Service
             _context = context;
         }
 
-        public bool Create(Author author)
+        public AuthorModel CreateAuthor(string firstName, string lastName, DateTime birthDate, string location)
         {
+            var author = new Author()
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                BirthDate = birthDate,
+                Location = location
+            };
+
             _context.Authors.Add(author);
-            return _context.SaveChanges() > 0;
+            _context.SaveChanges();
+
+            return new AuthorModel()
+            {
+                FirstName = author.FirstName,
+                LastName = author.LastName,
+                BirthDate = author.BirthDate,
+                Location = author.Location
+            };
         }
 
-        public bool Delete(int id)
+        public AuthorModel DeleteAuthor(int authorId)
         {
-            var author = _context.Authors.FirstOrDefault(a => a.Id == id);
+            var author = _context.Authors
+                .FirstOrDefault(a => a.Id == authorId);
+            
             _context.Authors.Remove(author);
-            return _context.SaveChanges() > 0;
+            _context.SaveChanges();
+
+            return author != null
+                ? MapFromEntity(author)
+                : null;
         }
 
-        public Author Get(int? id)
+        public AuthorModel GetAuthor(int authorId)
         {
-            return _context.Authors.FirstOrDefault(a => a.Id == id);
+            var author = _context.Authors
+                .FirstOrDefault(a => a.Id == authorId);
+
+            return author != null
+                ? MapFromEntity(author)
+                : null;
         }
 
-        public IList<Author> GetAll()
+        public IEnumerable<AuthorModel> GetAll()
         {
-            return _context.Authors.ToList();
+            var autModelList = new List<AuthorModel>();
+            var autList = _context.Authors.ToList();
+
+            foreach (var model in autList)
+            {
+                var autModel = new AuthorModel()
+                {
+                    AuthorId = model.Id,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    BirthDate = model.BirthDate,
+                    Location = model.Location
+                };
+                autModelList.Add(autModel);
+            }
+            return autModelList;
         }
 
-        public bool Update(Author author)
+        public AuthorModel UpdateAuthor(AuthorModel model)
         {
+            var author = _context.Authors
+                .SingleOrDefault(a => a.Id == model.AuthorId);
+
+            author.FirstName = model.FirstName;
+            author.LastName = model.LastName;
+            author.BirthDate = model.BirthDate;
+            author.Location = model.Location;
+
             _context.Authors.Update(author);
-            return _context.SaveChanges() > 0;
+            _context.SaveChanges();
+
+            return model;
+        }
+
+        private AuthorModel MapFromEntity(Author entity)
+        {
+            return new AuthorModel()
+            {
+                AuthorId = entity.Id,
+                FirstName = entity.FirstName,
+                LastName = entity.LastName,
+                BirthDate = entity.BirthDate,
+                Location = entity.Location
+            };
         }
     }
 }

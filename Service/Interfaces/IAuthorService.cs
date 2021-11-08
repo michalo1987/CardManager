@@ -1,21 +1,19 @@
-﻿using CardManager.Models;
+﻿using CardManager.Service.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CardManager.Service.Interfaces
 {
     public interface IAuthorService
     {
-        IList<Author> GetAll();
+        IEnumerable<AuthorModel> GetAll();
 
-        Author Get(int? id);
+        AuthorModel GetAuthor(int authorId);
 
-        bool Create(Author author);
+        AuthorModel CreateAuthor(string firstName, string lastName, DateTime birthDate, string location);
 
-        bool Update(Author author);
+        AuthorModel UpdateAuthor(AuthorModel model);
 
-        bool Delete(int id);
+        AuthorModel DeleteAuthor(int authorId);
     }
 }
