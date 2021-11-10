@@ -64,6 +64,7 @@ namespace CardManager.Service
             {
                 BookId = entity.Id,
                 Exists = entity.BookDetail != null,
+                Title = entity.Title,
                 NumberOfChapters = (entity.BookDetail?.NumberOfChapters).GetValueOrDefault(),
                 NumberOfPages = (entity.BookDetail?.NumberOfPages).GetValueOrDefault(),
                 Weight = (entity.BookDetail?.Weight).GetValueOrDefault(),

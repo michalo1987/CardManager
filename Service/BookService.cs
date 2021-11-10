@@ -1,10 +1,10 @@
 ﻿using CardManager.Data;
 using CardManager.Models;
 using CardManager.Service.Interfaces;
-using System;
+using CardManager.Service.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace CardManager.Service
 {
@@ -17,33 +17,96 @@ namespace CardManager.Service
             _context = context;
         }
 
-        public bool Create(Book book)
+        public BookModel CreateBook(string title, string isbn, double price, int categoryId, int publisherId)
         {
+            var book = new Book()
+            {
+                Title = title,
+                ISBN = isbn,
+                Price = price,
+                CategoryId = categoryId,
+                PublisherId = publisherId
+            };
+
             _context.Books.Add(book);
-            return _context.SaveChanges() > 0;
+            _context.SaveChanges();
+
+            return MapFromEntity(book);
         }
 
-        public bool Delete(int id)
+        public BookModel DeleteBook(int bookId)
         {
-            var result = _context.Books.FirstOrDefault(b => b.Id == id);
-            _context.Books.Remove(result);
-            return _context.SaveChanges() > 0;
+            var book = _context.Books
+                .FirstOrDefault(b => b.Id == bookId);
+
+            _context.Books.Remove(book);
+            _context.SaveChanges();
+
+            return book != null
+                ? MapFromEntity(book)
+                : null;
         }
 
-        public Book Get(int? id)
+        public BookModel GetBook(int bookId)
         {
-            return _context.Books.FirstOrDefault(b => b.Id == id);
+            var book = _context.Books
+                .FirstOrDefault(b => b.Id == bookId);
+
+            return book != null
+                ? MapFromEntity(book)
+                : null;
         }
 
-        public IList<Book> GetAll()
+        public IEnumerable<BookModel> GetAll()
         {
-            return _context.Books.ToList();
+            var bookModelList = new List<BookModel>();
+            var bookList = _context.Books
+                .Include(b => b.Category)
+                .Include(b => b.Publisher)
+                .ToList();
+
+            foreach (var model in bookList)
+            {
+                var bookModel = new BookModel()
+                {
+                    BookId = model.Id,
+                    ISBN = model.ISBN,
+                    Price = model.Price,
+                    Title = model.Title,
+                    CategoryName = model.Category?.Name,
+                    PublisherName = model.Publisher?.Name
+                };
+                bookModelList.Add(bookModel);
+            }
+            return bookModelList;
         }
 
-        public bool Update(Book book)
+        public BookModel UpdateBook(BookModel model)
         {
+            var book = _context.Books
+                .SingleOrDefault(b => b.Id == model.BookId);
+
+            book.ISBN = model.ISBN;
+            book.Price = model.Price;
+            book.Title = model.Title;
+
             _context.Books.Update(book);
-            return _context.SaveChanges() > 0;
+            _context.SaveChanges();
+
+            return model;
+        }
+
+        private BookModel MapFromEntity(Book entity)
+        {
+            return new BookModel()
+            {
+                BookId = entity.Id,
+                PublisherId = entity.PublisherId,
+                CategoryId = entity.CategoryId,
+                ISBN = entity.ISBN,
+                Price = entity.Price,
+                Title = entity.Title
+            };
         }
     }
 }

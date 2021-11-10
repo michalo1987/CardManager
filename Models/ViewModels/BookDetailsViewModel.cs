@@ -9,6 +9,8 @@ namespace CardManager.Models.ViewModels
     {
         public int BookId { get; set; }
 
+        public string Title { get; set; }
+
         public bool DetailsExists { get; set; }
         
         public int NumberOfChapters { get; set; }

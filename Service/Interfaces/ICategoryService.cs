@@ -25,9 +25,5 @@ namespace CardManager.Service.Interfaces
         bool RemoveMultiple2(IEnumerable<Category> categories);
 
         bool RemoveMultiple5(IEnumerable<Category> categories);
-
-        IEnumerable<SelectListItem> CategoryList();
-
-        void PopulateCategory();
     }
 }

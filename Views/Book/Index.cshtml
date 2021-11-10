@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Book>
+﻿@model IEnumerable<BookViewModel>
 
 @{ 
     ViewData["Title"] = "Book";
@@ -44,7 +44,7 @@
                     {
                         <tr>
                             <td>
-                                @item.Category.Name
+                                @item.CategoryName
                             </td>
                             <td>
                                 @item.Title
@@ -53,7 +53,7 @@
                                 @item.Price
                             </td>
                             <td>
-                                @item.Publisher.Name
+                                @item.PublisherName
                             </td>
                             @*<td>
                                 @{
@@ -66,16 +66,16 @@
                                 @authors.Trim().TrimEnd(',')
                             </td>*@
                             <td>
-                                <a class="btn btn-danger text-white" asp-controller="Book" asp-action="Edit" asp-route-Id="@item.Id">
+                                <a class="btn btn-danger text-white" asp-controller="Book" asp-action="Edit" asp-route-Id="@item.BookId">
                                     Edit
                                 </a>
-                                <a class="btn btn-info text-white" asp-controller="Book" asp-action="Details" asp-route-Id="@item.Id">
+                                <a class="btn btn-info text-white" asp-controller="Book" asp-action="Details" asp-route-Id="@item.BookId">
                                     Details
                                 </a>
-                                <a class="btn btn-outline-danger table-success" asp-controller="Book" asp-action="Delete" asp-route-Id="@item.Id">
+                                <a class="btn btn-outline-danger table-success" asp-controller="Book" asp-action="Delete" asp-route-Id="@item.BookId">
                                     Delete
                                 </a>
-                                <a class="btn btn-warning text-white" asp-controller="Book" asp-action="ManageAuthors" asp-route-Id="@item.Id">
+                                <a class="btn btn-warning text-white" asp-controller="Book" asp-action="ManageAuthors" asp-route-Id="@item.BookId">
                                     Authors
                                 </a>
                             </td>

@@ -13,6 +13,8 @@ namespace CardManager.Service.Models
 
         public bool Exists { get; set; }
 
+        public string Title { get; set; }
+
         public int NumberOfChapters { get; set; }
 
         public int NumberOfPages { get; set; }

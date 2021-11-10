@@ -1,83 +1,68 @@
 ﻿@model BookViewModel
 
 @{
-    ViewData["Title"] = "Create Book";
-    var currentBookId = Model.Book?.Id ?? 0;
+    ViewData["Title"] = "Edit Book";
 }
 
-<form method="post" asp-action="Upsert" asp-controller="Book">
+<form asp-controller="Book" asp-action="Edit" method="post">
     <div class="container">
         <div class="row p-3 border">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @*<input type="hidden" asp-for="Book.Id" />*@
-
-            <input type="hidden" name="Book.Id" value="@currentBookId" />
- 
-            @if (Model.Book != null)
-            {
-                ViewData["Title"] = "Edit Book";
-            }
+            <input type="hidden" asp-for="BookId" />
             <div class="col-12 border-bottom">
                 <h2 class="text-danger">@ViewData["Title"]</h2>
             </div>
             <div class="col-8 pt-4">
                 <div class="form-group row">
                     <div class="col-4">
-                        <label asp-for="Book.Title"></label>
+                        <label asp-for="Title"></label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="Book.Title" class="form-control" />
-                        <span asp-validation-for="Book.Title" class="text-danger"></span>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group row mt-4 mb-3">
                     <div class="col-4">
-                        <label asp-for="Book.ISBN"></label>
+                        <label asp-for="ISBN"></label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="Book.ISBN" class="form-control" />
-                        <span asp-validation-for="Book.ISBN" class="text-danger"></span>
+                        <input asp-for="ISBN" class="form-control" />
+                        <span asp-validation-for="ISBN" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group row mt-4 mb-3">
                     <div class="col-4">
-                        <label asp-for="Book.Price"></label>
+                        <label asp-for="Price"></label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="Book.Price" class="form-control" />
-                        <span asp-validation-for="Book.Price" class="text-danger"></span>
+                        <input asp-for="Price" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group row mt-4 mb-3">
                     <div class="col-4">
-                        <label asp-for="Book.PublisherId"></label>
+                        <label asp-for="PublisherId"></label>
                     </div>
                     <div class="col-8">
-                        @Html.DropDownListFor(u => u.Book.PublisherId, Model.PublisherList, "--Publisher List--",
+                        @Html.DropDownListFor(u => u.PublisherId, Model.PublisherList, "--Publisher List--",
                             new { @class = "form-control" })
-                        <span asp-validation-for="Book.PublisherId" class="text-danger"></span>
+                        <span asp-validation-for="PublisherId" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group row mt-4 mb-3">
                     <div class="col-4">
-                        <label asp-for="Book.CategoryId"></label>
+                        <label asp-for="CategoryId"></label>
                     </div>
                     <div class="col-8">
-                        @Html.DropDownListFor(u => u.Book.CategoryId, Model.CategoryList, "--Category List--",
+                        @Html.DropDownListFor(u => u.CategoryId, Model.CategoryList, "--Category List--",
                             new { @class = "form-control" })
-                        <span asp-validation-for="Book.CategoryId" class="text-danger"></span>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group row mt-4 mb-3">
                     <div class="col-4 offset-4">
-                        @if (Model.Book == null)
-                        {
-                            <button type="submit" class="btn btn-danger form-control">Create</button>
-                        }
-                        else
-                        {
-                            <button type="submit" class="btn btn-danger form-control">Update</button>
-                        }
+                        <button type="submit" class="btn btn-danger form-control">Update</button>
                     </div>
                     <div class="col-4">
                         <a asp-controller="Book" asp-action="Index" class="btn btn-outline-danger form-control">Back to List</a>

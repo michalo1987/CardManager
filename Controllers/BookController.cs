@@ -2,7 +2,9 @@
 using CardManager.Service.Interfaces;
 using CardManager.Service.Models;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CardManager.Controllers
 {
@@ -25,62 +27,104 @@ namespace CardManager.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var result = _bookService.GetAll();
-            _publisherService.PopulatePublisher();
-            _categoryService.PopulateCategory();
-            return View(result);
+            var bookViewModelList = new List<BookViewModel>();
+            var bookModelList = _bookService.GetAll();
+
+            foreach (var model in bookModelList)
+            {
+                var bookViewModel = new BookViewModel()
+                {
+                    BookId = model.BookId,
+                    ISBN = model.ISBN,
+                    Price = model.Price,
+                    Title = model.Title,
+                    CategoryName = model.CategoryName,
+                    PublisherName = model.PublisherName
+                };
+                bookViewModelList.Add(bookViewModel);
+            }
+            
+            return View(bookViewModelList);
+        }
+
+        [HttpGet]
+        public IActionResult New()
+        {
+            var viewModel = InitBookViewModel();
+            return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert([FromForm]BookViewModel bookViewModel)
+        public IActionResult New([FromForm]BookViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                if (bookViewModel.Book.Id == 0)
-                {
-                    _bookService.Create(bookViewModel.Book);
-                }
-                else
-                {
-                    _bookService.Update(bookViewModel.Book);
-                }
+                _bookService.CreateBook(viewModel.Title, viewModel.ISBN, viewModel.Price, viewModel.CategoryId, viewModel.PublisherId);
                 return RedirectToAction("Index");
             }
-            return View(bookViewModel);
+            return View(viewModel);
         }
 
-        [HttpGet("{controller}/{action}")]
-        public IActionResult New()
-        {
-            return View("Upsert", InitBookViewModel());
-        }
-
-        [HttpGet("{controller}/{action}/{id}")]
+        [HttpGet]
         public IActionResult Edit(int id)
         {
-            var book = _bookService.Get(id);
+            var book = _bookService.GetBook(id);
             if (book == null)
             {
-                return NotFound();
+                return NotFound($"Book ID = {id} does not exists.");
             }
 
-            var bookViewModel = InitBookViewModel();
-            bookViewModel.Book = _bookService.Get(id);
+            var viewModel = InitBookViewModel();
 
-            return View("Upsert", bookViewModel);
+            viewModel.BookId = book.BookId;
+            viewModel.CategoryId = book.CategoryId;
+            viewModel.PublisherId = book.PublisherId;
+            viewModel.Title = book.Title;
+            viewModel.ISBN = book.ISBN;
+            viewModel.Price = book.Price;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit([FromForm]BookViewModel viewModel)
+        {
+            var model = new BookModel()
+            {
+                BookId = viewModel.BookId,
+                CategoryId = viewModel.CategoryId,
+                PublisherId = viewModel.PublisherId,
+                ISBN = viewModel.ISBN,
+                Title = viewModel.Title,
+                Price = viewModel.Price
+            };
+
+            if (ModelState.IsValid)
+            {
+                _bookService.UpdateBook(model);
+            }
+
+            return RedirectToAction("Index");
         }
 
         private BookViewModel InitBookViewModel()
         {
             var bookViewModel = new BookViewModel
             {
-                PublisherList = _publisherService.PublisherList(),
-                CategoryList = _categoryService.CategoryList()
+                PublisherList = _publisherService.GetAll().Select(item => MapPublisherToSelectListItem(item)),
+                CategoryList = _categoryService.GetAll().Select(item => MapCategoryToSelectListItem(item))
             };
 
             return bookViewModel;
         }
+
+        private static SelectListItem MapCategoryToSelectListItem(CategoryModel item)
+            => new SelectListItem() { Value = $"{item.CategoryId}", Text = item.Name };
+
+        private static SelectListItem MapPublisherToSelectListItem(PublisherModel item)
+            => new SelectListItem() { Value = $"{item.PublisherId}", Text = item.Name };
 
         [HttpGet("{controller}/{action}/{bookId}")]
         public IActionResult Details(int bookId)
@@ -95,6 +139,7 @@ namespace CardManager.Controllers
             { 
                 BookId = bookId,
                 DetailsExists = bookDetails.Exists,
+                Title = bookDetails.Title,
                 NumberOfChapters = bookDetails.NumberOfChapters,
                 NumberOfPages = bookDetails.NumberOfPages,
                 Weight = bookDetails.Weight,
@@ -110,6 +155,7 @@ namespace CardManager.Controllers
             var model = new BookDetailsModel()
             {
                 BookId = bookDetailsViewModel.BookId,
+                Title = bookDetailsViewModel.Title,
                 NumberOfChapters = bookDetailsViewModel.NumberOfChapters,
                 NumberOfPages = bookDetailsViewModel.NumberOfPages,
                 Weight = bookDetailsViewModel.Weight

@@ -1,14 +1,10 @@
-﻿@model BookDetailsViewModel
+﻿@model BookViewModel
 
 @{
-    var viewName = "Book Details";
-    ViewData["Title"] = Model.DetailsExists ? $"Edit {viewName}" : $"Create {viewName}";
-    Layout = "_Layout";
-
-    var submitButtonText = Model.DetailsExists ? "Update" : "Create";
+    ViewData["Title"] = "Create Book";
 }
 
-<form asp-controller="Book" asp-action="Details" method="post">
+<form asp-controller="Book" asp-action="New" method="post">
     <div class="container">
         <div class="row p-3 border">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -22,39 +18,51 @@
                         <label asp-for="Title"></label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="Title" disabled class="form-control" />
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group row mt-4 mb-3">
                     <div class="col-4">
-                        <label asp-for="NumberOfChapters"></label>
+                        <label asp-for="ISBN"></label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="NumberOfChapters" class="form-control" />
-                        <span asp-validation-for="NumberOfChapters" class="text-danger"></span>
+                        <input asp-for="ISBN" class="form-control" />
+                        <span asp-validation-for="ISBN" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group row mt-4 mb-3">
                     <div class="col-4">
-                        <label asp-for="NumberOfPages"></label>
+                        <label asp-for="Price"></label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="NumberOfPages" class="form-control" />
-                        <span asp-validation-for="NumberOfPages" class="text-danger"></span>
+                        <input asp-for="Price" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group row mt-4 mb-3">
                     <div class="col-4">
-                        <label asp-for="Weight"></label>
+                        <label asp-for="PublisherId"></label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="Weight" class="form-control" />
-                        <span asp-validation-for="Weight" class="text-danger"></span>
+                        @Html.DropDownListFor(u => u.PublisherId, Model.PublisherList, "--Publisher List--",
+                            new { @class = "form-control" })
+                        <span asp-validation-for="PublisherId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row mt-4 mb-3">
+                    <div class="col-4">
+                        <label asp-for="CategoryId"></label>
+                    </div>
+                    <div class="col-8">
+                        @Html.DropDownListFor(u => u.CategoryId, Model.CategoryList, "--Category List--",
+                            new { @class = "form-control" })
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group row mt-4 mb-3">
                     <div class="col-4 offset-4">
-                        <button type="submit" class="btn btn-danger form-control">@submitButtonText</button>
+                        <button type="submit" class="btn btn-danger form-control">Create</button>
                     </div>
                     <div class="col-4">
                         <a asp-controller="Book" asp-action="Index" class="btn btn-outline-danger form-control">Back to List</a>
@@ -64,6 +72,8 @@
         </div>
     </div>
 </form>
+<br />
+<br />
 
 @section Scripts{
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }

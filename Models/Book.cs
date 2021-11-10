@@ -15,7 +15,7 @@ namespace CardManager.Models
         public string Title { get; set; }
 
         [Required]
-        [MaxLength(15)]
+        [MaxLength(13)]
         public string ISBN { get; set; }
 
         [Required]

@@ -3,6 +3,7 @@ using CardManager.Models;
 using CardManager.Service.Interfaces;
 using CardManager.Service.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -126,21 +127,6 @@ namespace CardManager.Service
             _context.Categories.RemoveRange(catList);
 
             return _context.SaveChanges() > 0;
-        }
-
-        public IEnumerable<SelectListItem> CategoryList()
-        {
-            return _context.Categories
-                .Select(i => new SelectListItem { Text = i.Name, Value = i.Id.ToString() });
-        }
-
-        public void PopulateCategory()
-        {
-            List<Book> objList = _context.Books.ToList();
-            foreach (var obj in objList)
-            {
-                _context.Entry(obj).Reference(p => p.Category).Load();
-            }
         }
 
         private static CategoryModel MapFromEntity(Category entity)

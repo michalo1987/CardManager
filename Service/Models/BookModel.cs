@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace CardManager.Models.ViewModels
+
+namespace CardManager.Service.Models
 {
-    public class BookViewModel
+    public class BookModel
     {
         public int BookId { get; set; }
 
@@ -20,7 +21,7 @@ namespace CardManager.Models.ViewModels
         public string Title { get; set; }
 
         [Required]
-        [MinLength(13), MaxLength(13)]
+        [MaxLength(13)]
         public string ISBN { get; set; }
 
         [Required]

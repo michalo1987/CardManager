@@ -3,6 +3,7 @@ using CardManager.Models;
 using CardManager.Service.Interfaces;
 using CardManager.Service.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -79,11 +80,9 @@ namespace CardManager.Service
 
         public void PopulatePublisher()
         {
-            List<Book> objList = _context.Books.ToList();
-            foreach (var obj in objList)
-            {
-                _context.Entry(obj).Reference(p => p.Publisher).Load();
-            }
+            List<Book> objList = _context.Books
+                .Include(p => p.Publisher)
+                .ToList();
         }
 
         public IEnumerable<SelectListItem> PublisherList()

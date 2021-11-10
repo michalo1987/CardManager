@@ -1,21 +1,19 @@
 ﻿using CardManager.Models;
-using System;
+using CardManager.Service.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CardManager.Service.Interfaces
 {
     public interface IBookService
     {
-        IList<Book> GetAll();
+        IEnumerable<BookModel> GetAll();
 
-        Book Get(int? id);
+        BookModel GetBook(int bookId);
 
-        bool Create(Book book);
+        BookModel CreateBook(string title, string isbn, double price, int categoryId, int publisherId);
 
-        bool Update(Book book);
+        BookModel UpdateBook(BookModel model);
 
-        bool Delete(int id);
+        BookModel DeleteBook(int bookId);
     }
 }
