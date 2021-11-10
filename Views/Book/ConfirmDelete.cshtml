@@ -1,14 +1,13 @@
-﻿@model BookViewModel
+﻿@model ConfirmDeleteBookViewModel
 
 @{
-    ViewData["Title"] = "Edit Book";
+    ViewData["Title"] = "Confirm Delete";
     Layout = "_Layout";
 }
 
-<form asp-controller="Book" asp-action="Edit" method="post">
+<form asp-controller="Book" asp-action="Delete" method="post">
     <div class="container">
         <div class="row p-3 border">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="BookId" />
             <div class="col-12 border-bottom">
                 <h2 class="text-danger">@ViewData["Title"]</h2>
@@ -16,11 +15,26 @@
             <div class="col-8 pt-4">
                 <div class="form-group row">
                     <div class="col-4">
+                        <label asp-for="CategoryName"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="CategoryName" disabled class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group row mt-4 mb-3">
+                    <div class="col-4">
+                        <label asp-for="PublisherName"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="PublisherName" disabled class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group row mt-4 mb-3">
+                    <div class="col-4">
                         <label asp-for="Title"></label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="Title" class="form-control" />
-                        <span asp-validation-for="Title" class="text-danger"></span>
+                        <input asp-for="Title" disabled class="form-control" />
                     </div>
                 </div>
                 <div class="form-group row mt-4 mb-3">
@@ -28,8 +42,7 @@
                         <label asp-for="ISBN"></label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="ISBN" class="form-control" />
-                        <span asp-validation-for="ISBN" class="text-danger"></span>
+                        <input asp-for="ISBN" disabled class="form-control" />
                     </div>
                 </div>
                 <div class="form-group row mt-4 mb-3">
@@ -37,33 +50,12 @@
                         <label asp-for="Price"></label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="Price" class="form-control" />
-                        <span asp-validation-for="Price" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row mt-4 mb-3">
-                    <div class="col-4">
-                        <label asp-for="PublisherId"></label>
-                    </div>
-                    <div class="col-8">
-                        @Html.DropDownListFor(u => u.PublisherId, Model.PublisherList, "--Publisher List--",
-                            new { @class = "form-control" })
-                        <span asp-validation-for="PublisherId" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row mt-4 mb-3">
-                    <div class="col-4">
-                        <label asp-for="CategoryId"></label>
-                    </div>
-                    <div class="col-8">
-                        @Html.DropDownListFor(u => u.CategoryId, Model.CategoryList, "--Category List--",
-                            new { @class = "form-control" })
-                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        <input asp-for="Price" disabled class="form-control" />
                     </div>
                 </div>
                 <div class="form-group row mt-4 mb-3">
                     <div class="col-4 offset-4">
-                        <button type="submit" class="btn btn-danger form-control">Update</button>
+                        <button type="submit" class="btn btn-danger form-control">Delete</button>
                     </div>
                     <div class="col-4">
                         <a asp-controller="Book" asp-action="Index" class="btn btn-outline-danger form-control">Back to List</a>
@@ -75,7 +67,3 @@
 </form>
 <br />
 <br />
-
-@section Scripts{
-    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
-}

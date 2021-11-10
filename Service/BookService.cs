@@ -50,6 +50,8 @@ namespace CardManager.Service
         public BookModel GetBook(int bookId)
         {
             var book = _context.Books
+                .Include(b => b.Category)
+                .Include(b => b.Publisher)
                 .FirstOrDefault(b => b.Id == bookId);
 
             return book != null
@@ -103,6 +105,8 @@ namespace CardManager.Service
                 BookId = entity.Id,
                 PublisherId = entity.PublisherId,
                 CategoryId = entity.CategoryId,
+                PublisherName = entity.Publisher.Name,
+                CategoryName = entity.Category.Name,
                 ISBN = entity.ISBN,
                 Price = entity.Price,
                 Title = entity.Title

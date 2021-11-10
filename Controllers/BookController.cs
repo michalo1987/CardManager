@@ -150,7 +150,7 @@ namespace CardManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Details(BookDetailsViewModel bookDetailsViewModel)
+        public IActionResult Details([FromForm]BookDetailsViewModel bookDetailsViewModel)
         {
             var model = new BookDetailsModel()
             {
@@ -163,6 +163,44 @@ namespace CardManager.Controllers
             _bookDetailService.UpdateBookDetails(model);
 
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete([FromForm] ConfirmDeleteBookViewModel viewModel)
+        {
+            try
+            {
+                _bookService.DeleteBook(viewModel.BookId);
+            }
+            catch
+            {
+                return RedirectToAction("ConfirmDelete", new { id = viewModel.BookId});
+            }
+
+            return RedirectToAction("Index");
+        }
+        
+        [HttpGet]
+        public IActionResult ConfirmDelete(int id)
+        {
+            var book = _bookService.GetBook(id);
+            if (book == null)
+            {
+                return NotFound($"Book ID = {id} does not exists.");
+            }
+
+            var viewModel = new ConfirmDeleteBookViewModel()
+            {
+                BookId = book.BookId,
+                CategoryName = book.CategoryName,
+                PublisherName = book.PublisherName,
+                Title = book.Title,
+                ISBN = book.ISBN,
+                Price = book.Price
+            };
+
+            return View(viewModel);
         }
     }
 }
