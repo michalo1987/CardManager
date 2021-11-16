@@ -15,5 +15,7 @@ namespace CardManager.Service.Interfaces
         BookModel UpdateBook(BookModel model);
 
         BookModel DeleteBook(int bookId);
+
+        int CountBooks();
     }
 }

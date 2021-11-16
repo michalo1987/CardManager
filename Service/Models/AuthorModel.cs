@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CardManager.Service.Models
 {
@@ -16,10 +13,5 @@ namespace CardManager.Service.Models
         public DateTime BirthDate { get; set; }
 
         public string Location { get; set; }
-
-        public string FullName
-        {
-            get { return $"{FirstName} {LastName}"; }
-        }
     }
 }

@@ -1,34 +1,42 @@
 ﻿using CardManager.Models;
+using CardManager.Models.ViewModels;
+using CardManager.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CardManager.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IBookService _bookService;
+        private readonly IPublisherService _publisherService;
+        private readonly IAuthorService _authorService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IBookService bookService, IPublisherService publisherService, IAuthorService authorService)
         {
-            _logger = logger;
+            _bookService = bookService;
+            _publisherService = publisherService;
+            _authorService = authorService;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            var viewModel = new HomePageViewModel()
+            {
+                BookCount = _bookService.CountBooks(),
+                PublisherCount = _publisherService.CountPublishers(),
+                AuthorCount = _authorService.CountAuthors()
+            };
+
+            return View(viewModel);
         }
 
         [Authorize]
         public IActionResult CardManager()
         {
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

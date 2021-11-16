@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace CardManager.Service.Models
 {
@@ -26,9 +23,5 @@ namespace CardManager.Service.Models
 
         [Required]
         public double Price { get; set; }
-
-        public IEnumerable<SelectListItem> PublisherList { get; set; } = new List<SelectListItem>();
-
-        public IEnumerable<SelectListItem> CategoryList { get; set; } = new List<SelectListItem>();
     }
 }

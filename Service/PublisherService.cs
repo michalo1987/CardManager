@@ -78,13 +78,6 @@ namespace CardManager.Service
             return pubModelList;
         }
 
-        public void PopulatePublisher()
-        {
-            List<Book> objList = _context.Books
-                .Include(p => p.Publisher)
-                .ToList();
-        }
-
         public IEnumerable<SelectListItem> PublisherList()
         {
             return _context.Publishers
@@ -113,6 +106,11 @@ namespace CardManager.Service
                 Name = entity.Name,
                 Location = entity.Location
             };
+        }
+
+        public int CountPublishers()
+        {
+            return _context.Publishers.Count();
         }
     }
 }

@@ -19,6 +19,6 @@ namespace CardManager.Service.Interfaces
 
         IEnumerable<SelectListItem> PublisherList();
 
-        void PopulatePublisher();
+        int CountPublishers();
     }
 }

@@ -50,13 +50,21 @@ namespace CardManager.Service
         public BookModel GetBook(int bookId)
         {
             var book = _context.Books
-                .Include(b => b.Category)
                 .Include(b => b.Publisher)
+                .Include(b => b.Category)
                 .FirstOrDefault(b => b.Id == bookId);
 
-            return book != null
-                ? MapFromEntity(book)
-                : null;
+            return new BookModel()
+            {
+                BookId = book.Id,
+                PublisherId = book.PublisherId,
+                CategoryId = book.CategoryId,
+                CategoryName = book.Category.Name,
+                PublisherName = book.Publisher.Name,
+                ISBN = book.ISBN,
+                Price = book.Price,
+                Title = book.Title
+            }; 
         }
 
         public IEnumerable<BookModel> GetAll()
@@ -105,12 +113,15 @@ namespace CardManager.Service
                 BookId = entity.Id,
                 PublisherId = entity.PublisherId,
                 CategoryId = entity.CategoryId,
-                PublisherName = entity.Publisher.Name,
-                CategoryName = entity.Category.Name,
                 ISBN = entity.ISBN,
                 Price = entity.Price,
                 Title = entity.Title
             };
+        }
+
+        public int CountBooks()
+        {
+            return _context.Books.Count();
         }
     }
 }

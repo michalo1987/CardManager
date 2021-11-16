@@ -167,7 +167,7 @@ namespace CardManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete([FromForm] ConfirmDeleteBookViewModel viewModel)
+        public IActionResult Delete([FromForm]ConfirmDeleteBookViewModel viewModel)
         {
             try
             {

@@ -15,5 +15,7 @@ namespace CardManager.Service.Interfaces
         AuthorModel UpdateAuthor(AuthorModel model);
 
         AuthorModel DeleteAuthor(int authorId);
+
+        int CountAuthors();
     }
 }

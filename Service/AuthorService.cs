@@ -109,5 +109,10 @@ namespace CardManager.Service
                 Location = entity.Location
             };
         }
+
+        public int CountAuthors()
+        {
+            return _context.Authors.Count();
+        }
     }
 }
