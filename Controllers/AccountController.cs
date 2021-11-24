@@ -26,20 +26,21 @@ namespace CardManager.Controllers
         public IActionResult Register(string returnurl = null)
         {
             ViewData["ReturnUrl"] = returnurl;
-            RegisterViewModel registerViewModel = new RegisterViewModel();
-            return View(registerViewModel);
+            RegisterViewModel viewModel = new RegisterViewModel();
+
+            return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register([FromForm]RegisterViewModel model, string returnurl = null)
+        public async Task<IActionResult> Register([FromForm]RegisterViewModel viewModel, string returnurl = null)
         {
             ViewData["ReturnUrl"] = returnurl;
             returnurl = returnurl ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Name, Email = model.Email, Name = model.Name };
-                var result = await _userManager.CreateAsync(user, model.Password);
+                var user = new ApplicationUser { UserName = viewModel.Name, Email = viewModel.Email, Name = viewModel.Name };
+                var result = await _userManager.CreateAsync(user, viewModel.Password);
 
                 if (result.Succeeded)
                 {
@@ -48,19 +49,22 @@ namespace CardManager.Controllers
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                         var callbackurl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
 
-                        await _emailSender.SendEmailAsync(model.Email, "Confirm your account - Identity Manager",
+                        await _emailSender.SendEmailAsync(viewModel.Email, "Confirm your account - Identity Manager",
                             "Please confirm your account by clicking here: <a href=\"" + callbackurl + "\">link</a>");
+
                         return RedirectToAction("ActivateAccount");
                     }
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
+
                         return LocalRedirect(returnurl);
                     }
                 }
                 AddErrors(result);
             }
-            return View(model);
+
+            return View(viewModel);
         }
 
         [HttpGet]
@@ -76,6 +80,7 @@ namespace CardManager.Controllers
                 return View("Error");
             }
             var result = await _userManager.ConfirmEmailAsync(user, code);
+
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
@@ -89,20 +94,21 @@ namespace CardManager.Controllers
         public IActionResult Login(string returnurl = null)
         {
             ViewData["ReturnUrl"] = returnurl;
+
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login([FromForm]LoginViewModel model, string returnurl = null)
+        public async Task<IActionResult> Login([FromForm]LoginViewModel viewModel, string returnurl = null)
         {
             ViewData["ReturnUrl"] = returnurl;
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var userName = await _userManager.FindByEmailAsync(model.Email);
-                    var result = await _signInManager.PasswordSignInAsync(userName, model.Password, model.RememberMe, lockoutOnFailure: true);
+                    var userName = await _userManager.FindByEmailAsync(viewModel.Email);
+                    var result = await _signInManager.PasswordSignInAsync(userName, viewModel.Password, viewModel.RememberMe, lockoutOnFailure: true);
 
                     if (result.Succeeded)
                     {
@@ -111,7 +117,8 @@ namespace CardManager.Controllers
                     if (result.IsNotAllowed)
                     {
                         ModelState.AddModelError(string.Empty, "Activate your account first pleaase.");
-                        return View(model);
+
+                        return View(viewModel);
                     }
                     if (result.IsLockedOut)
                     {
@@ -120,16 +127,19 @@ namespace CardManager.Controllers
                     else
                     {
                         ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                        return View(model);
+
+                        return View(viewModel);
                     }
                 }
                 catch (ArgumentNullException)
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return View(model);
+
+                    return View(viewModel);
                 }
             }
-            return View(model);
+
+            return View(viewModel);
         }
 
         [HttpGet]
@@ -143,6 +153,7 @@ namespace CardManager.Controllers
         public async Task<IActionResult> LogOff()
         {
             await _signInManager.SignOutAsync();
+
             return RedirectToAction("Index", "Home");
         }
 
@@ -154,25 +165,28 @@ namespace CardManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ForgotPassword([FromForm]ForgotPasswordViewModel model)
+        public async Task<IActionResult> ForgotPassword([FromForm]ForgotPasswordViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
+                var user = await _userManager.FindByEmailAsync(viewModel.Email);
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "Invalid email attempt.");
-                    return View(model);
+
+                    return View(viewModel);
                 }
 
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var callbackurl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
 
-                await _emailSender.SendEmailAsync(model.Email, "Reset password - Identity Manager", 
+                await _emailSender.SendEmailAsync(viewModel.Email, "Reset password - Identity Manager", 
                     "Please reset your password by clicking here: <a href=\"" + callbackurl + "\">link</a>");
+
                 return RedirectToAction("ForgotPasswordConfirmation");
             }
-            return View(model);
+
+            return View(viewModel);
         }
 
         [HttpGet]
@@ -189,25 +203,27 @@ namespace CardManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ResetPassword([FromForm]ResetPasswordViewModel model)
+        public async Task<IActionResult> ResetPassword([FromForm]ResetPasswordViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
+                var user = await _userManager.FindByEmailAsync(viewModel.Email);
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "Invalid email attempt.");
-                    return View(model);
+
+                    return View(viewModel);
                 }
 
-                var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
+                var result = await _userManager.ResetPasswordAsync(user, viewModel.Code, viewModel.Password);
                 if (result.Succeeded)
                 {
                     return RedirectToAction("ResetPasswordConfirmation");
                 }
                 AddErrors(result);
             }
-            return View(model);
+
+            return View(viewModel);
         }
 
         [HttpGet]
@@ -222,6 +238,7 @@ namespace CardManager.Controllers
         {
             var redirecturl = Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnurl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirecturl);
+
             return Challenge(properties, provider);
         }
 
@@ -231,6 +248,7 @@ namespace CardManager.Controllers
             if (remoteerror != null)
             {
                 ModelState.AddModelError(string.Empty, $"Error from external provider: {remoteerror}");
+
                 return View("Login");
             }
             var info = await _signInManager.GetExternalLoginInfoAsync();
@@ -242,6 +260,7 @@ namespace CardManager.Controllers
             if (result.Succeeded)
             {
                 await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
+
                 return LocalRedirect(returnurl);
             }
             else
@@ -250,13 +269,14 @@ namespace CardManager.Controllers
                 ViewData["ProviderDisplayName"] = info.ProviderDisplayName;
                 var email = info.Principal.FindFirstValue(ClaimTypes.Email);
                 var name = info.Principal.FindFirstValue(ClaimTypes.Name);
+
                 return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = email, Name = name });
             }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ExternalLoginConfirmation([FromForm]ExternalLoginConfirmationViewModel model, string returnurl = null)
+        public async Task<IActionResult> ExternalLoginConfirmation([FromForm]ExternalLoginConfirmationViewModel viewModel, string returnurl = null)
         {
             ViewData["ReturnUrl"] = returnurl;
             returnurl = returnurl ?? Url.Content("~/");
@@ -268,7 +288,8 @@ namespace CardManager.Controllers
                 {
                     return View("Error");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name = model.Name };
+
+                var user = new ApplicationUser { UserName = viewModel.Email, Email = viewModel.Email, Name = viewModel.Name };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -277,12 +298,14 @@ namespace CardManager.Controllers
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
+
                         return LocalRedirect(returnurl);
                     }
                 }
                 AddErrors(result);
             }
-            return View(model);
+
+            return View(viewModel);
         }
 
         private void AddErrors(IdentityResult result)

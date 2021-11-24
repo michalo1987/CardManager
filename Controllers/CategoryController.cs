@@ -40,6 +40,7 @@ namespace CardManager.Controllers
         public IActionResult New()
         {
             var viewModel = new CategoryViewModel();
+
             return View(viewModel);
         }
 
@@ -50,6 +51,7 @@ namespace CardManager.Controllers
             if (ModelState.IsValid)
             {
                 _categoryService.CreateCategory(viewModel.Name);
+
                 return RedirectToAction("Index");
             }
 
@@ -96,30 +98,35 @@ namespace CardManager.Controllers
         public IActionResult Delete(int id)
         {
             _categoryService.DeleteCategory(id);
+
             return RedirectToAction("Index");
         }
 
         public IActionResult CreateMultiple2(IList<Category> categories)
         {
             _categoryService.CreateMultiple2(categories);
+
             return RedirectToAction("Index");
         }
 
         public IActionResult CreateMultiple5(IList<Category> categories)
         {
             _categoryService.CreateMultiple5(categories);
+
             return RedirectToAction("Index");
         }
 
         public IActionResult RemoveMultiple2(IEnumerable<Category> categories)
         {
             _categoryService.RemoveMultiple2(categories);
+
             return RedirectToAction("Index");
         }
 
         public IActionResult RemoveMultiple5(IEnumerable<Category> categories)
         {
             _categoryService.RemoveMultiple5(categories);
+
             return RedirectToAction("Index");
         }
     }

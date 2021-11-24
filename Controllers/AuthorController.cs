@@ -41,6 +41,7 @@ namespace CardManager.Controllers
         public IActionResult New()
         {
             var viewModel = new AuthorViewModel();
+
             return View(viewModel);
         }
 
@@ -51,6 +52,7 @@ namespace CardManager.Controllers
             if (ModelState.IsValid)
             {
                 _authorService.CreateAuthor(viewModel.FirstName, viewModel.LastName, viewModel.BirthDate, viewModel.Location);
+
                 return RedirectToAction("Index");
             }
 
@@ -103,6 +105,7 @@ namespace CardManager.Controllers
         public IActionResult Delete(int id)
         {
             _authorService.DeleteAuthor(id);
+
             return RedirectToAction("Index");
         }
     }

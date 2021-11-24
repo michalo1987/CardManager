@@ -1,8 +1,8 @@
-﻿using CardManager.Models.ViewModels;
+﻿using CardManager.MapingActions;
+using CardManager.Models.ViewModels;
 using CardManager.Service.Interfaces;
 using CardManager.Service.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -12,32 +12,29 @@ namespace CardManager.Controllers
     public class BookController : Controller
     {
         private readonly IBookService _bookService;
-        private readonly IPublisherService _publisherService;
-        private readonly ICategoryService _categoryService;
         private readonly IBookDetailService _bookDetailService;
         private readonly IBookAuthorService _bookAuthorService;
         private readonly IAuthorService _authorService;
+        private readonly MapingControllerActions _maping;
 
-        public BookController(IBookService bookService, IPublisherService publisherService, ICategoryService categoryService,
-            IBookDetailService bookDetailService, IBookAuthorService bookAuthorService, IAuthorService authorService)
+        public BookController(IBookService bookService, IBookDetailService bookDetailService, IBookAuthorService bookAuthorService, IAuthorService authorService, MapingControllerActions maping)
         {
             _bookService = bookService;
-            _publisherService = publisherService;
-            _categoryService = categoryService;
             _bookDetailService = bookDetailService;
             _bookAuthorService = bookAuthorService;
             _authorService = authorService;
+            _maping = maping;
         }
 
         [HttpGet]
-        public IActionResult Index(int id)
+        public IActionResult Index()
         {
             var bookViewModelList = new List<BookViewModel>();
             var bookModelList = _bookService.GetAll();
 
             foreach (var model in bookModelList)
             {
-                var bookViewModel = new BookViewModel()
+                var viewModel = new BookViewModel()
                 {
                     BookId = model.BookId,
                     ISBN = model.ISBN,
@@ -45,38 +42,32 @@ namespace CardManager.Controllers
                     Title = model.Title,
                     CategoryName = model.CategoryName,
                     PublisherName = model.PublisherName,
-                    BookAuthorList = model.AuthorList.Select(a => MapBookAuthorWithNamesOnly(a))
+                    BookAuthorList = model.AuthorList.Select(a => _maping.MapBookAuthorWithNamesOnly(a))
                 };
-                bookViewModelList.Add(bookViewModel);
+                bookViewModelList.Add(viewModel);
             }
 
             return View(bookViewModelList);
         }
 
-        private AuthorViewModel MapBookAuthorWithNamesOnly(AuthorModel source)
-            => new AuthorViewModel()
-            {
-                FirstName = source.FirstName,
-                LastName = source.LastName
-            };
-
-
         [HttpGet]
         public IActionResult New()
         {
-            var viewModel = InitBookViewModel();
+            var viewModel = _maping.InitBookViewModel();
+
             return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult New([FromForm] BookViewModel viewModel)
+        public IActionResult New([FromForm]BookViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
                 _bookService.CreateBook(viewModel.Title, viewModel.ISBN, viewModel.Price, viewModel.CategoryId, viewModel.PublisherId);
                 return RedirectToAction("Index");
             }
+
             return View(viewModel);
         }
 
@@ -89,7 +80,7 @@ namespace CardManager.Controllers
                 return NotFound($"Book ID = {id} does not exists.");
             }
 
-            var viewModel = InitBookViewModel();
+            var viewModel = _maping.InitBookViewModel();
 
             viewModel.BookId = book.BookId;
             viewModel.CategoryId = book.CategoryId;
@@ -103,7 +94,7 @@ namespace CardManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromForm] BookViewModel viewModel)
+        public IActionResult Edit([FromForm]BookViewModel viewModel)
         {
             var model = new BookModel()
             {
@@ -122,23 +113,6 @@ namespace CardManager.Controllers
 
             return RedirectToAction("Index");
         }
-
-        private BookViewModel InitBookViewModel()
-        {
-            var bookViewModel = new BookViewModel
-            {
-                PublisherList = _publisherService.GetAll().Select(item => MapPublisherToSelectListItem(item)),
-                CategoryList = _categoryService.GetAll().Select(item => MapCategoryToSelectListItem(item))
-            };
-
-            return bookViewModel;
-        }
-
-        private static SelectListItem MapCategoryToSelectListItem(CategoryModel item)
-            => new SelectListItem() { Value = $"{item.CategoryId}", Text = item.Name };
-
-        private static SelectListItem MapPublisherToSelectListItem(PublisherModel item)
-            => new SelectListItem() { Value = $"{item.PublisherId}", Text = item.Name };
 
         [HttpGet("{controller}/{action}/{bookId}")]
         public IActionResult Details(int bookId)
@@ -164,15 +138,15 @@ namespace CardManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Details([FromForm] BookDetailsViewModel bookDetailsViewModel)
+        public IActionResult Details([FromForm]BookDetailsViewModel viewModel)
         {
             var model = new BookDetailsModel()
             {
-                BookId = bookDetailsViewModel.BookId,
-                Title = bookDetailsViewModel.Title,
-                NumberOfChapters = bookDetailsViewModel.NumberOfChapters,
-                NumberOfPages = bookDetailsViewModel.NumberOfPages,
-                Weight = bookDetailsViewModel.Weight
+                BookId = viewModel.BookId,
+                Title = viewModel.Title,
+                NumberOfChapters = viewModel.NumberOfChapters,
+                NumberOfPages = viewModel.NumberOfPages,
+                Weight = viewModel.Weight
             };
             _bookDetailService.UpdateBookDetails(model);
 
@@ -181,7 +155,7 @@ namespace CardManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete([FromForm] ConfirmDeleteBookViewModel viewModel)
+        public IActionResult Delete([FromForm]ConfirmDeleteBookViewModel viewModel)
         {
             try
             {
@@ -242,11 +216,7 @@ namespace CardManager.Controllers
                 }),
                 AvailableAuthorList = availableAuthors
                     .Where(a => bookAuthor.AuthorList.Any(ba => ba.AuthorId == a.AuthorId) == false)
-                    .Select(a => new SelectListItem
-                    {
-                        Text = a.FullName,
-                        Value = a.AuthorId.ToString()
-                    })
+                    .Select(a => _maping.MapAuthorToSelectListItem(a))
             };
 
             return View(viewModel);
@@ -254,18 +224,18 @@ namespace CardManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult ManageAuthors(BookAuthorViewModel viewModel)
+        public IActionResult ManageAuthors([FromForm]BookAuthorViewModel viewModel)
         {
             if (ModelState.IsValid == false)
             {
-                return BadRequest("Errer message !?!?");
+                return BadRequest("400 BadRequest!");
             }
 
             var result = _bookAuthorService.AssignAuthor(viewModel.BookId, viewModel.AuthorId);
             if (result == false)
             {
                 HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                return Content("Server error");
+                return Content("Server error!");
             }
 
             return ManageAuthors(viewModel.BookId);

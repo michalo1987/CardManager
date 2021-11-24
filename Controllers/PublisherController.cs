@@ -31,6 +31,7 @@ namespace CardManager.Controllers
                 };
                 pubViewModelList.Add(viewModel);
             }
+
             return View(pubViewModelList);
         }
 
@@ -38,6 +39,7 @@ namespace CardManager.Controllers
         public IActionResult New()
         {
             var viewModel = new PublisherViewModel();
+
             return View(viewModel);
         }
 
@@ -50,6 +52,7 @@ namespace CardManager.Controllers
                 _publisherService.CreatePublisher(viewModel.Name, viewModel.Location);
                 return RedirectToAction("Index");
             }
+
             return View(viewModel);
         }
 
@@ -68,6 +71,7 @@ namespace CardManager.Controllers
                 Name = publisher.Name,
                 Location = publisher.Location
             };
+
             return View(viewModel); 
         }
 
@@ -86,6 +90,7 @@ namespace CardManager.Controllers
             {
                 _publisherService.UpdatePublisher(model);
             }
+
             return RedirectToAction("Index");
         }
 
@@ -93,6 +98,7 @@ namespace CardManager.Controllers
         public IActionResult Delete(int id)
         {
             _publisherService.DeletePublisher(id);
+
             return RedirectToAction("Index");
         }
     }
