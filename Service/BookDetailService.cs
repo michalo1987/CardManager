@@ -17,14 +17,6 @@ namespace CardManager.Service
             _context = context;
         }
 
-        public bool Create(BookDetail bookDetail)
-        {
-            _context.BookDetails
-                .Add(bookDetail.Book.BookDetail);
-
-            return _context.SaveChanges() > 0;
-        }
-
         public BookDetailsModel GetBookDetails(int bookId)
         {
             var book = _context.Books
@@ -50,12 +42,6 @@ namespace CardManager.Service
             _context.SaveChanges();
 
             return model;
-        }
-
-        public bool Update(BookDetail bookDetail)
-        {
-            _context.BookDetails.Update(bookDetail.Book.BookDetail);
-            return _context.SaveChanges() > 0;
         }
 
         private static BookDetailsModel MapFromEntity(Book entity)

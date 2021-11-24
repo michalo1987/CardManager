@@ -19,12 +19,6 @@ namespace CardManager.Models
 
         public string Location { get; set; }
 
-        [NotMapped]
-        public string FullName
-        {
-            get { return $"{FirstName} {LastName}"; }
-        }
-
         public ICollection<BookAuthor> BookAuthors { get; set; }
     }
 }

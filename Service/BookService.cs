@@ -73,6 +73,7 @@ namespace CardManager.Service
             var bookList = _context.Books
                 .Include(b => b.Category)
                 .Include(b => b.Publisher)
+                .Include(b => b.BookAuthors).ThenInclude(ba => ba.Author)
                 .ToList();
 
             foreach (var model in bookList)
@@ -84,7 +85,8 @@ namespace CardManager.Service
                     Price = model.Price,
                     Title = model.Title,
                     CategoryName = model.Category?.Name,
-                    PublisherName = model.Publisher?.Name
+                    PublisherName = model.Publisher?.Name,
+                    AuthorList = model.BookAuthors.Select(ba => MapFromEntity(ba.Author)).ToList()
                 };
                 bookModelList.Add(bookModel);
             }
@@ -122,6 +124,18 @@ namespace CardManager.Service
         public int CountBooks()
         {
             return _context.Books.Count();
+        }
+
+        private AuthorModel MapFromEntity(Author entity)
+        {
+            return new AuthorModel()
+            {
+                AuthorId = entity.Id,
+                FirstName = entity.FirstName,
+                LastName = entity.LastName,
+                BirthDate = entity.BirthDate,
+                Location = entity.Location
+            };
         }
     }
 }

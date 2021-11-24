@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace CardManager.Service.Models
 {
@@ -23,5 +24,7 @@ namespace CardManager.Service.Models
 
         [Required]
         public double Price { get; set; }
+
+        public ICollection<AuthorModel> AuthorList { get; set; }
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace CardManager.Controllers
 {
@@ -14,18 +15,22 @@ namespace CardManager.Controllers
         private readonly IPublisherService _publisherService;
         private readonly ICategoryService _categoryService;
         private readonly IBookDetailService _bookDetailService;
+        private readonly IBookAuthorService _bookAuthorService;
+        private readonly IAuthorService _authorService;
 
         public BookController(IBookService bookService, IPublisherService publisherService, ICategoryService categoryService,
-            IBookDetailService bookDetailService)
+            IBookDetailService bookDetailService, IBookAuthorService bookAuthorService, IAuthorService authorService)
         {
             _bookService = bookService;
             _publisherService = publisherService;
             _categoryService = categoryService;
             _bookDetailService = bookDetailService;
+            _bookAuthorService = bookAuthorService;
+            _authorService = authorService;
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(int id)
         {
             var bookViewModelList = new List<BookViewModel>();
             var bookModelList = _bookService.GetAll();
@@ -39,13 +44,22 @@ namespace CardManager.Controllers
                     Price = model.Price,
                     Title = model.Title,
                     CategoryName = model.CategoryName,
-                    PublisherName = model.PublisherName
+                    PublisherName = model.PublisherName,
+                    BookAuthorList = model.AuthorList.Select(a => MapBookAuthorWithNamesOnly(a))
                 };
                 bookViewModelList.Add(bookViewModel);
             }
-            
+
             return View(bookViewModelList);
         }
+
+        private AuthorViewModel MapBookAuthorWithNamesOnly(AuthorModel source)
+            => new AuthorViewModel()
+            {
+                FirstName = source.FirstName,
+                LastName = source.LastName
+            };
+
 
         [HttpGet]
         public IActionResult New()
@@ -56,7 +70,7 @@ namespace CardManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult New([FromForm]BookViewModel viewModel)
+        public IActionResult New([FromForm] BookViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
@@ -89,7 +103,7 @@ namespace CardManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromForm]BookViewModel viewModel)
+        public IActionResult Edit([FromForm] BookViewModel viewModel)
         {
             var model = new BookModel()
             {
@@ -136,7 +150,7 @@ namespace CardManager.Controllers
             }
 
             var viewModel = new BookDetailsViewModel()
-            { 
+            {
                 BookId = bookId,
                 DetailsExists = bookDetails.Exists,
                 Title = bookDetails.Title,
@@ -150,7 +164,7 @@ namespace CardManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Details([FromForm]BookDetailsViewModel bookDetailsViewModel)
+        public IActionResult Details([FromForm] BookDetailsViewModel bookDetailsViewModel)
         {
             var model = new BookDetailsModel()
             {
@@ -167,7 +181,7 @@ namespace CardManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete([FromForm]ConfirmDeleteBookViewModel viewModel)
+        public IActionResult Delete([FromForm] ConfirmDeleteBookViewModel viewModel)
         {
             try
             {
@@ -175,19 +189,19 @@ namespace CardManager.Controllers
             }
             catch
             {
-                return RedirectToAction("ConfirmDelete", new { id = viewModel.BookId});
+                return RedirectToAction("ConfirmDelete", new { id = viewModel.BookId });
             }
 
             return RedirectToAction("Index");
         }
-        
+
         [HttpGet]
         public IActionResult ConfirmDelete(int id)
         {
             var book = _bookService.GetBook(id);
             if (book == null)
             {
-                return NotFound($"Book ID = {id} does not exists.");
+                return NotFound($"Book with ID = {id} does not exists.");
             }
 
             var viewModel = new ConfirmDeleteBookViewModel()
@@ -201,6 +215,68 @@ namespace CardManager.Controllers
             };
 
             return View(viewModel);
+        }
+
+        [HttpGet]
+        public IActionResult ManageAuthors(int id)
+        {
+            var bookAuthor = _bookAuthorService.GetBookAuthor(id);
+            if (bookAuthor == null)
+            {
+                return NotFound($"Book with ID = {id} does not exists.");
+            }
+
+            var availableAuthors = _authorService.GetAll();
+
+            var viewModel = new BookAuthorViewModel()
+            {
+                BookId = bookAuthor.BookId,
+                Title = bookAuthor.Title,
+                BookAuthorList = bookAuthor.AuthorList.Select(a => new AuthorViewModel()
+                {
+                    AuthorId = a.AuthorId,
+                    BirthDate = a.BirthDate,
+                    FirstName = a.FirstName,
+                    LastName = a.LastName,
+                    Location = a.Location
+                }),
+                AvailableAuthorList = availableAuthors
+                    .Where(a => bookAuthor.AuthorList.Any(ba => ba.AuthorId == a.AuthorId) == false)
+                    .Select(a => new SelectListItem
+                    {
+                        Text = a.FullName,
+                        Value = a.AuthorId.ToString()
+                    })
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ManageAuthors(BookAuthorViewModel viewModel)
+        {
+            if (ModelState.IsValid == false)
+            {
+                return BadRequest("Errer message !?!?");
+            }
+
+            var result = _bookAuthorService.AssignAuthor(viewModel.BookId, viewModel.AuthorId);
+            if (result == false)
+            {
+                HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                return Content("Server error");
+            }
+
+            return ManageAuthors(viewModel.BookId);
+        }
+
+        [HttpGet]
+        public IActionResult RemoveAuthors([FromQuery]int bookId, [FromQuery]int authorId)
+        {
+            _bookAuthorService.DeleteBookAuthor(bookId, authorId);
+
+            return RedirectToAction("ManageAuthors", new { id = bookId});
         }
     }
 }

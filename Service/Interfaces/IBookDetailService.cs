@@ -13,9 +13,5 @@ namespace CardManager.Service.Interfaces
         BookDetailsModel GetBookDetails(int bookId);
 
         BookDetailsModel UpdateBookDetails(BookDetailsModel model);
-
-        bool Create(BookDetail bookDetail);
-
-        bool Update(BookDetail bookDetail);
     }
 }

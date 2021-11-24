@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace CardManager.Models.ViewModels
+﻿namespace CardManager.Models.ViewModels
 {
     public class HomePageViewModel
     {

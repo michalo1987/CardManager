@@ -35,9 +35,9 @@
                         <th>
                             Publisher
                         </th>
-                        @*<th>
+                        <th>
                             Authors
-                        </th>*@
+                        </th>
                         <th></th>
                     </tr>
                     @foreach (var item in Model)
@@ -55,16 +55,16 @@
                             <td>
                                 @item.PublisherName
                             </td>
-                            @*<td>
+                            <td>
                                 @{
                                     var authors = "";
                                 }
-                                @foreach (var auth in item.BookAuthors)
+                                @foreach (var auth in item.BookAuthorList)
                                 {
-                                    authors += @auth.Author.FullName + ", ";
+                                    authors += @auth.FullName + ", ";
                                 }
                                 @authors.Trim().TrimEnd(',')
-                            </td>*@
+                            </td>
                             <td>
                                 <a class="btn btn-danger text-white" asp-controller="Book" asp-action="Edit" asp-route-Id="@item.BookId">
                                     Edit

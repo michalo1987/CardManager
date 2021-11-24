@@ -56,6 +56,7 @@ namespace CardManager
             services.AddScoped<IAuthorService, AuthorService>();
             services.AddScoped<IBookService, BookService>();
             services.AddScoped<IBookDetailService, BookDetailService>();
+            services.AddScoped<IBookAuthorService, BookAuthorService>();
 
             services.AddControllersWithViews();
         }

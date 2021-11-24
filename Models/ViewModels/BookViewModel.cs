@@ -12,9 +12,13 @@ namespace CardManager.Models.ViewModels
 
         public int CategoryId { get; set; }
 
+        public int AuthorId { get; set; }
+
         public string CategoryName { get; set; }
 
         public string PublisherName { get; set; }
+
+        public string AuthorName { get; set; }
 
         [Required]
         public string Title { get; set; }
@@ -29,5 +33,7 @@ namespace CardManager.Models.ViewModels
         public IEnumerable<SelectListItem> PublisherList { get; set; } = new List<SelectListItem>();
 
         public IEnumerable<SelectListItem> CategoryList { get; set; } = new List<SelectListItem>();
+
+        public IEnumerable<AuthorViewModel> BookAuthorList { get; set; } = new List<AuthorViewModel>();
     }
 }
