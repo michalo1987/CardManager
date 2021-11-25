@@ -1,4 +1,5 @@
 ﻿using CardManager.Data;
+using CardManager.MapingActions;
 using CardManager.Models;
 using CardManager.Service.Interfaces;
 using CardManager.Service.Models;
@@ -11,10 +12,12 @@ namespace CardManager.Service
     public class BookService : IBookService
     {
         public readonly ApplicationDbContext _context;
+        public readonly MapingServiceActions _maping;
 
-        public BookService(ApplicationDbContext context)
+        public BookService(ApplicationDbContext context, MapingServiceActions maping)
         {
             _context = context;
+            _maping = maping;
         }
 
         public BookModel CreateBook(string title, string isbn, double price, int categoryId, int publisherId)
@@ -31,7 +34,7 @@ namespace CardManager.Service
             _context.Books.Add(book);
             _context.SaveChanges();
 
-            return MapFromEntity(book);
+            return _maping.MapBookModelFromEntity(book);
         }
 
         public BookModel DeleteBook(int bookId)
@@ -43,7 +46,7 @@ namespace CardManager.Service
             _context.SaveChanges();
 
             return book != null
-                ? MapFromEntity(book)
+                ? _maping.MapBookModelFromEntity(book)
                 : null;
         }
 
@@ -54,17 +57,7 @@ namespace CardManager.Service
                 .Include(b => b.Category)
                 .FirstOrDefault(b => b.Id == bookId);
 
-            return new BookModel()
-            {
-                BookId = book.Id,
-                PublisherId = book.PublisherId,
-                CategoryId = book.CategoryId,
-                CategoryName = book.Category.Name,
-                PublisherName = book.Publisher.Name,
-                ISBN = book.ISBN,
-                Price = book.Price,
-                Title = book.Title
-            }; 
+            return _maping.MapBookModelFromEntity(book);
         }
 
         public IEnumerable<BookModel> GetAll()
@@ -78,18 +71,13 @@ namespace CardManager.Service
 
             foreach (var model in bookList)
             {
-                var bookModel = new BookModel()
-                {
-                    BookId = model.Id,
-                    ISBN = model.ISBN,
-                    Price = model.Price,
-                    Title = model.Title,
-                    CategoryName = model.Category?.Name,
-                    PublisherName = model.Publisher?.Name,
-                    AuthorList = model.BookAuthors.Select(ba => MapFromEntity(ba.Author)).ToList()
-                };
+                var bookModel = _maping.MapBookModelFromEntity(model);
+                bookModel.AuthorList = model.BookAuthors
+                    .Select(ba => _maping.MapAuthorModelFromEntity(ba.Author)).ToList();
+
                 bookModelList.Add(bookModel);
             }
+
             return bookModelList;
         }
 
@@ -108,34 +96,9 @@ namespace CardManager.Service
             return model;
         }
 
-        private BookModel MapFromEntity(Book entity)
-        {
-            return new BookModel()
-            {
-                BookId = entity.Id,
-                PublisherId = entity.PublisherId,
-                CategoryId = entity.CategoryId,
-                ISBN = entity.ISBN,
-                Price = entity.Price,
-                Title = entity.Title
-            };
-        }
-
         public int CountBooks()
         {
             return _context.Books.Count();
-        }
-
-        private AuthorModel MapFromEntity(Author entity)
-        {
-            return new AuthorModel()
-            {
-                AuthorId = entity.Id,
-                FirstName = entity.FirstName,
-                LastName = entity.LastName,
-                BirthDate = entity.BirthDate,
-                Location = entity.Location
-            };
         }
     }
 }

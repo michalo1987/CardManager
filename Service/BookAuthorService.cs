@@ -1,4 +1,5 @@
 ﻿using CardManager.Data;
+using CardManager.MapingActions;
 using CardManager.Models;
 using CardManager.Service.Interfaces;
 using CardManager.Service.Models;
@@ -10,10 +11,12 @@ namespace CardManager.Service
     public class BookAuthorService : IBookAuthorService
     {
         private readonly ApplicationDbContext _context;
+        private readonly MapingServiceActions _maping;
 
-        public BookAuthorService(ApplicationDbContext context)
+        public BookAuthorService(ApplicationDbContext context, MapingServiceActions maping)
         {
             _context = context;
+            _maping = maping;
         }
 
         public BookAuthorModel GetBookAuthor(int bookId)
@@ -24,33 +27,8 @@ namespace CardManager.Service
                 .SingleOrDefault(book => book.Id == bookId);
 
             return book != null
-                ? MapFromEntity(book)
+                ? _maping.MapBookAuthorModelFromEntity(book)
                 : null;
-        }
-
-        private static BookAuthorModel MapFromEntity(Book entity)
-        {
-            return new BookAuthorModel()
-            {
-                BookId = entity.Id,
-                Title = entity.Title,
-                AuthorList = entity
-                    .BookAuthors
-                    .Select(a => MapFromAuthorEntity(a.Author))
-                    .ToList()
-            };
-        }
-
-        private static AuthorModel MapFromAuthorEntity(Author entity)
-        {
-            return new AuthorModel()
-            {
-                AuthorId = entity.Id,
-                FirstName = entity.FirstName,
-                LastName = entity.LastName,
-                BirthDate = entity.BirthDate,
-                Location = entity.Location
-            };
         }
 
         public bool AssignAuthor(int bookId, int authorId)

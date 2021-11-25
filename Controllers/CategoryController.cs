@@ -46,7 +46,7 @@ namespace CardManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult New([FromForm]CategoryViewModel viewModel)
+        public IActionResult New([FromForm] CategoryViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
@@ -78,7 +78,7 @@ namespace CardManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromForm]CategoryViewModel viewModel)
+        public IActionResult Edit([FromForm] CategoryViewModel viewModel)
         {
             var model = new CategoryModel()
             {
@@ -102,30 +102,34 @@ namespace CardManager.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult CreateMultiple2(IList<Category> categories)
+        [HttpGet]
+        public IActionResult CreateMultiple2()
         {
-            _categoryService.CreateMultiple2(categories);
+            _categoryService.CreateMultiple2();
 
             return RedirectToAction("Index");
         }
 
-        public IActionResult CreateMultiple5(IList<Category> categories)
+        [HttpGet]
+        public IActionResult CreateMultiple5()
         {
-            _categoryService.CreateMultiple5(categories);
+            _categoryService.CreateMultiple5();
 
             return RedirectToAction("Index");
         }
 
-        public IActionResult RemoveMultiple2(IEnumerable<Category> categories)
+        [HttpGet]
+        public IActionResult RemoveMultiple2()
         {
-            _categoryService.RemoveMultiple2(categories);
+            _categoryService.RemoveMultiple2();
 
             return RedirectToAction("Index");
         }
 
-        public IActionResult RemoveMultiple5(IEnumerable<Category> categories)
+        [HttpGet]
+        public IActionResult RemoveMultiple5()
         {
-            _categoryService.RemoveMultiple5(categories);
+            _categoryService.RemoveMultiple5();
 
             return RedirectToAction("Index");
         }

@@ -1,9 +1,9 @@
 ﻿using CardManager.Data;
+using CardManager.MapingActions;
 using CardManager.Models;
 using CardManager.Service.Interfaces;
 using CardManager.Service.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,10 +12,12 @@ namespace CardManager.Service
     public class PublisherService : IPublisherService
     {
         private readonly ApplicationDbContext _context;
+        private readonly MapingServiceActions _maping;
 
-        public PublisherService(ApplicationDbContext context)
+        public PublisherService(ApplicationDbContext context, MapingServiceActions maping)
         {
             _context = context;
+            _maping = maping;
         }
 
         public PublisherModel CreatePublisher(string name, string location)
@@ -29,12 +31,7 @@ namespace CardManager.Service
             _context.Publishers.Add(publisher);
             _context.SaveChanges();
 
-            return new PublisherModel()
-            {
-                PublisherId = publisher.Id,
-                Name = publisher.Name,
-                Location = publisher.Location
-            };
+            return _maping.MapPublisherModelFromEntity(publisher);
         }
 
         public PublisherModel DeletePublisher(int publisherId)
@@ -46,7 +43,7 @@ namespace CardManager.Service
             _context.SaveChanges();
 
             return publisher != null
-                ? MapFromEntity(publisher)
+                ? _maping.MapPublisherModelFromEntity(publisher)
                 : null;
         }
 
@@ -56,7 +53,7 @@ namespace CardManager.Service
                 .FirstOrDefault(p => p.Id == publisherId);
 
             return publisher != null
-                ? MapFromEntity(publisher)
+                ? _maping.MapPublisherModelFromEntity(publisher)
                 : null;
         }
 
@@ -67,14 +64,10 @@ namespace CardManager.Service
 
             foreach (var model in pubList)
             {
-                var pubModel = new PublisherModel()
-                {
-                    PublisherId = model.Id,
-                    Name = model.Name,
-                    Location = model.Location
-                };
+                var pubModel = _maping.MapPublisherModelFromEntity(model);
                 pubModelList.Add(pubModel);
             }
+
             return pubModelList;
         }
 
@@ -96,16 +89,6 @@ namespace CardManager.Service
             _context.SaveChanges();
 
             return model;
-        }
-
-        private static PublisherModel MapFromEntity(Publisher entity)
-        {
-            return new PublisherModel()
-            {
-                PublisherId = entity.Id,
-                Name = entity.Name,
-                Location = entity.Location
-            };
         }
 
         public int CountPublishers()

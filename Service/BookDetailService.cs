@@ -1,4 +1,5 @@
 ﻿using CardManager.Data;
+using CardManager.MapingActions;
 using CardManager.Models;
 using CardManager.Service.Interfaces;
 using CardManager.Service.Models;
@@ -11,10 +12,12 @@ namespace CardManager.Service
     public class BookDetailService : IBookDetailService
     {
         private readonly ApplicationDbContext _context;
+        private readonly MapingServiceActions _maping;
 
-        public BookDetailService(ApplicationDbContext context)
+        public BookDetailService(ApplicationDbContext context, MapingServiceActions maping)
         {
             _context = context;
+            _maping = maping;
         }
 
         public BookDetailsModel GetBookDetails(int bookId)
@@ -24,7 +27,7 @@ namespace CardManager.Service
                 .FirstOrDefault(book => book.Id == bookId);
 
             return book != null
-                ? MapFromEntity(book)
+                ? _maping.MapBookDetailsModelFromEntity(book)
                 : null;
         }
 
@@ -42,19 +45,6 @@ namespace CardManager.Service
             _context.SaveChanges();
 
             return model;
-        }
-
-        private static BookDetailsModel MapFromEntity(Book entity)
-        {
-            return new BookDetailsModel()
-            {
-                BookId = entity.Id,
-                Exists = entity.BookDetail != null,
-                Title = entity.Title,
-                NumberOfChapters = (entity.BookDetail?.NumberOfChapters).GetValueOrDefault(),
-                NumberOfPages = (entity.BookDetail?.NumberOfPages).GetValueOrDefault(),
-                Weight = (entity.BookDetail?.Weight).GetValueOrDefault(),
-            };
         }
     }
 }

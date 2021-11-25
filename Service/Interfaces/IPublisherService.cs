@@ -1,5 +1,4 @@
-﻿using CardManager.Models;
-using CardManager.Service.Models;
+﻿using CardManager.Service.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 

@@ -1,9 +1,8 @@
 ﻿using CardManager.Data;
+using CardManager.MapingActions;
 using CardManager.Models;
 using CardManager.Service.Interfaces;
 using CardManager.Service.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +12,12 @@ namespace CardManager.Service
     public class CategoryService : ICategoryService
     {
         private readonly ApplicationDbContext _context;
+        private readonly MapingServiceActions _maping;
 
-        public CategoryService(ApplicationDbContext context)
+        public CategoryService(ApplicationDbContext context, MapingServiceActions maping)
         {
             _context = context;
+            _maping = maping;
         }
 
         public IEnumerable<CategoryModel> GetAll()
@@ -26,13 +27,10 @@ namespace CardManager.Service
 
             foreach (var model in catlist)
             {
-                var catModel = new CategoryModel()
-                {
-                    CategoryId = model.Id,
-                    Name = model.Name
-                };
+                var catModel = _maping.MapCategoryModelFromEntity(model);
                 catModelList.Add(catModel);
             }
+
             return catModelList;
         }
 
@@ -42,7 +40,7 @@ namespace CardManager.Service
                 .FirstOrDefault(c => c.Id == categoryId);
 
             return category != null
-                ? MapFromEntity(category)
+                ? _maping.MapCategoryModelFromEntity(category)
                 : null;
         }
 
@@ -56,11 +54,7 @@ namespace CardManager.Service
             _context.Categories.Add(category);
             _context.SaveChanges();
 
-            return new CategoryModel()
-            {
-                CategoryId = category.Id,
-                Name = category.Name
-            };
+            return _maping.MapCategoryModelFromEntity(category);
         }
 
         public CategoryModel UpdateCategory(CategoryModel model)
@@ -85,11 +79,11 @@ namespace CardManager.Service
             _context.SaveChanges();
 
             return category != null
-                ? MapFromEntity(category)
+                ? _maping.MapCategoryModelFromEntity(category)
                 : null;
         }
 
-        public bool CreateMultiple2(IList<Category> categories)
+        public bool CreateMultiple2()
         {
             var catList = new List<Category>();
             for (int i = 1; i <= 2; i++)
@@ -101,7 +95,7 @@ namespace CardManager.Service
             return _context.SaveChanges() > 0;
         }
 
-        public bool CreateMultiple5(IList<Category> categories)
+        public bool CreateMultiple5()
         {
             var catList = new List<Category>();
             for (int i = 1; i <= 5; i++)
@@ -113,7 +107,7 @@ namespace CardManager.Service
             return _context.SaveChanges() > 0;
         }
 
-        public bool RemoveMultiple2(IEnumerable<Category> categories)
+        public bool RemoveMultiple2()
         {
             var catList = _context.Categories.OrderByDescending(c => c.Id).Take(2).ToList();
             _context.Categories.RemoveRange(catList);
@@ -121,21 +115,12 @@ namespace CardManager.Service
             return _context.SaveChanges() > 0;
         }
 
-        public bool RemoveMultiple5(IEnumerable<Category> categories)
+        public bool RemoveMultiple5()
         {
             var catList = _context.Categories.OrderByDescending(c => c.Id).Take(5).ToList();
             _context.Categories.RemoveRange(catList);
 
             return _context.SaveChanges() > 0;
-        }
-
-        private static CategoryModel MapFromEntity(Category entity)
-        {
-            return new CategoryModel()
-            {
-                CategoryId = entity.Id,
-                Name = entity.Name,
-            };
         }
     }
 }

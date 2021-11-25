@@ -1,4 +1,5 @@
 ﻿using CardManager.Data;
+using CardManager.MapingActions;
 using CardManager.Models;
 using CardManager.Service.Interfaces;
 using CardManager.Service.Models;
@@ -11,10 +12,12 @@ namespace CardManager.Service
     public class AuthorService : IAuthorService
     {
         private readonly ApplicationDbContext _context;
+        private readonly MapingServiceActions _maping;
 
-        public AuthorService(ApplicationDbContext context)
+        public AuthorService(ApplicationDbContext context, MapingServiceActions maping)
         {
             _context = context;
+            _maping = maping;
         }
 
         public AuthorModel CreateAuthor(string firstName, string lastName, DateTime birthDate, string location)
@@ -30,13 +33,7 @@ namespace CardManager.Service
             _context.Authors.Add(author);
             _context.SaveChanges();
 
-            return new AuthorModel()
-            {
-                FirstName = author.FirstName,
-                LastName = author.LastName,
-                BirthDate = author.BirthDate,
-                Location = author.Location
-            };
+            return _maping.MapAuthorModelFromEntity(author);
         }
 
         public AuthorModel DeleteAuthor(int authorId)
@@ -48,7 +45,7 @@ namespace CardManager.Service
             _context.SaveChanges();
 
             return author != null
-                ? MapFromEntity(author)
+                ? _maping.MapAuthorModelFromEntity(author)
                 : null;
         }
 
@@ -58,7 +55,7 @@ namespace CardManager.Service
                 .FirstOrDefault(a => a.Id == authorId);
 
             return author != null
-                ? MapFromEntity(author)
+                ? _maping.MapAuthorModelFromEntity(author)
                 : null;
         }
 
@@ -69,16 +66,10 @@ namespace CardManager.Service
 
             foreach (var model in autList)
             {
-                var autModel = new AuthorModel()
-                {
-                    AuthorId = model.Id,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    BirthDate = model.BirthDate,
-                    Location = model.Location
-                };
+                var autModel = _maping.MapAuthorModelFromEntity(model);
                 autModelList.Add(autModel);
             }
+
             return autModelList;
         }
 
@@ -96,18 +87,6 @@ namespace CardManager.Service
             _context.SaveChanges();
 
             return model;
-        }
-
-        private AuthorModel MapFromEntity(Author entity)
-        {
-            return new AuthorModel()
-            {
-                AuthorId = entity.Id,
-                FirstName = entity.FirstName,
-                LastName = entity.LastName,
-                BirthDate = entity.BirthDate,
-                Location = entity.Location
-            };
         }
 
         public int CountAuthors()
