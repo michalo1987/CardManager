@@ -34,16 +34,9 @@ namespace CardManager.Controllers
 
             foreach (var model in bookModelList)
             {
-                var viewModel = new BookViewModel()
-                {
-                    BookId = model.BookId,
-                    ISBN = model.ISBN,
-                    Price = model.Price,
-                    Title = model.Title,
-                    CategoryName = model.CategoryName,
-                    PublisherName = model.PublisherName,
-                    BookAuthorList = model.AuthorList.Select(a => _maping.MapBookAuthorWithNamesOnly(a))
-                };
+                var viewModel = _maping.MapBookViewModelFromEntity(model);
+                viewModel.BookAuthorList = model.AuthorList.Select(a => _maping.MapBookAuthorWithNamesOnly(a));
+
                 bookViewModelList.Add(viewModel);
             }
 
@@ -206,14 +199,8 @@ namespace CardManager.Controllers
             {
                 BookId = bookAuthor.BookId,
                 Title = bookAuthor.Title,
-                BookAuthorList = bookAuthor.AuthorList.Select(a => new AuthorViewModel()
-                {
-                    AuthorId = a.AuthorId,
-                    BirthDate = a.BirthDate,
-                    FirstName = a.FirstName,
-                    LastName = a.LastName,
-                    Location = a.Location
-                }),
+                BookAuthorList = bookAuthor.AuthorList
+                    .Select(a => _maping.MapAuthorViewModelFromEntity(a)),
                 AvailableAuthorList = availableAuthors
                     .Where(a => bookAuthor.AuthorList.Any(ba => ba.AuthorId == a.AuthorId) == false)
                     .Select(a => _maping.MapAuthorToSelectListItem(a))
@@ -235,6 +222,7 @@ namespace CardManager.Controllers
             if (result == false)
             {
                 HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
                 return Content("Server error!");
             }
 

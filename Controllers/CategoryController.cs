@@ -1,4 +1,4 @@
-﻿using CardManager.Models;
+﻿using CardManager.MapingActions;
 using CardManager.Models.ViewModels;
 using CardManager.Service.Interfaces;
 using CardManager.Service.Models;
@@ -11,10 +11,12 @@ namespace CardManager.Controllers
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
+        private readonly MapingControllerActions _maping;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(ICategoryService categoryService, MapingControllerActions maping)
         {
             _categoryService = categoryService;
+            _maping = maping;
         }
 
         [HttpGet]
@@ -25,11 +27,7 @@ namespace CardManager.Controllers
 
             foreach (var model in catModelList)
             {
-                var viewModel = new CategoryViewModel()
-                {
-                    CategoryId = model.CategoryId,
-                    Name = model.Name
-                };
+                var viewModel = _maping.MapCategoryViewModelFromEntity(model);
                 catViewModelList.Add(viewModel);
             }
 
@@ -67,11 +65,7 @@ namespace CardManager.Controllers
                 return NotFound($"Category ID = {id} does not exists.");
             }
 
-            var viewModel = new CategoryViewModel()
-            {
-                CategoryId = category.CategoryId,
-                Name = category.Name,
-            };
+            var viewModel = _maping.MapCategoryViewModelFromEntity(category);
 
             return View(viewModel);
         }

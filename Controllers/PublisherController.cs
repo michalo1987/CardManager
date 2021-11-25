@@ -1,4 +1,5 @@
-﻿using CardManager.Models.ViewModels;
+﻿using CardManager.MapingActions;
+using CardManager.Models.ViewModels;
 using CardManager.Service.Interfaces;
 using CardManager.Service.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -9,10 +10,12 @@ namespace CardManager.Controllers
     public class PublisherController : Controller
     {
         private readonly IPublisherService _publisherService;
+        private readonly MapingControllerActions _maping;
 
-        public PublisherController(IPublisherService publisherService)
+        public PublisherController(IPublisherService publisherService, MapingControllerActions maping)
         {
             _publisherService = publisherService;
+            _maping = maping;
         }
 
         [HttpGet]
@@ -23,12 +26,7 @@ namespace CardManager.Controllers
 
             foreach (var model in pubModelList)
             {
-                var viewModel = new PublisherViewModel()
-                {
-                    PublisherId = model.PublisherId,
-                    Name = model.Name,
-                    Location = model.Location
-                };
+                var viewModel = _maping.MapPublisherViewModelFromEntity(model);
                 pubViewModelList.Add(viewModel);
             }
 
@@ -50,6 +48,7 @@ namespace CardManager.Controllers
             if (ModelState.IsValid)
             {
                 _publisherService.CreatePublisher(viewModel.Name, viewModel.Location);
+
                 return RedirectToAction("Index");
             }
 
@@ -65,12 +64,7 @@ namespace CardManager.Controllers
                 return NotFound($"Publisher ID = {id} does not exists.");
             }
 
-            var viewModel = new PublisherViewModel()
-            {
-                PublisherId = publisher.PublisherId,
-                Name = publisher.Name,
-                Location = publisher.Location
-            };
+            var viewModel = _maping.MapPublisherViewModelFromEntity(publisher);
 
             return View(viewModel); 
         }

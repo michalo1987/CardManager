@@ -43,5 +43,57 @@ namespace CardManager.MapingActions
 
         public SelectListItem MapAuthorToSelectListItem(AuthorModel item)
             => new SelectListItem() { Value = $"{item.AuthorId}", Text = item.FullName };
+
+        public PublisherViewModel MapPublisherViewModelFromEntity(PublisherModel model)
+        {
+            var publisherViewModel = new PublisherViewModel()
+            {
+                PublisherId = model.PublisherId,
+                Name = model.Name,
+                Location = model.Location
+            };
+
+            return publisherViewModel;
+        }
+
+        public CategoryViewModel MapCategoryViewModelFromEntity(CategoryModel model)
+        {
+            var categoryViewModel = new CategoryViewModel()
+            {
+                CategoryId = model.CategoryId,
+                Name = model.Name
+            };
+
+            return categoryViewModel;
+        }
+
+        public AuthorViewModel MapAuthorViewModelFromEntity(AuthorModel model)
+        {
+            var authorViewModel = new AuthorViewModel()
+            {
+                AuthorId = model.AuthorId,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                BirthDate = model.BirthDate,
+                Location = model.Location
+            };
+
+            return authorViewModel;
+        }
+
+        public BookViewModel MapBookViewModelFromEntity(BookModel model)
+        {
+            var bookViewModel = new BookViewModel()
+            {
+                BookId = model.BookId,
+                ISBN = model.ISBN,
+                Price = model.Price,
+                Title = model.Title,
+                CategoryName = model.CategoryName,
+                PublisherName = model.PublisherName,
+            };
+
+            return bookViewModel;
+        }
     }
 }
