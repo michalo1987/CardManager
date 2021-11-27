@@ -1,4 +1,4 @@
-﻿using CardManager.MapingActions;
+﻿using CardManager.MapingActions.Interfaces;
 using CardManager.Models.ViewModels;
 using CardManager.Service.Interfaces;
 using CardManager.Service.Models;
@@ -10,9 +10,9 @@ namespace CardManager.Controllers
     public class AuthorController : Controller
     {
         private readonly IAuthorService _authorService;
-        private readonly MapingControllerActions _maping;
+        private readonly IMapingControllerActions _maping;
 
-        public AuthorController(IAuthorService authorService, MapingControllerActions maping)
+        public AuthorController(IAuthorService authorService, IMapingControllerActions maping)
         {
             _authorService = authorService;
             _maping = maping;
@@ -26,7 +26,7 @@ namespace CardManager.Controllers
 
             foreach (var model in autModelList)
             {
-                var viewModel = _maping.MapAuthorViewModelFromEntity(model);
+                var viewModel = _maping.MapAuthorViewModelFromModel(model);
                 autViewModelList.Add(viewModel);
             }
 
@@ -64,7 +64,7 @@ namespace CardManager.Controllers
                 return NotFound($"Author ID = {id} does not exists.");
             }
 
-            var viewModel = _maping.MapAuthorViewModelFromEntity(author);
+            var viewModel = _maping.MapAuthorViewModelFromModel(author);
 
             return View(viewModel);
         }

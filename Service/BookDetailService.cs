@@ -1,20 +1,19 @@
 ﻿using CardManager.Data;
-using CardManager.MapingActions;
+using CardManager.MapingActions.Interfaces;
 using CardManager.Models;
 using CardManager.Service.Interfaces;
 using CardManager.Service.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
-
 namespace CardManager.Service
 {
     public class BookDetailService : IBookDetailService
     {
         private readonly ApplicationDbContext _context;
-        private readonly MapingServiceActions _maping;
+        private readonly IMapingServiceActions _maping;
 
-        public BookDetailService(ApplicationDbContext context, MapingServiceActions maping)
+        public BookDetailService(ApplicationDbContext context, IMapingServiceActions maping)
         {
             _context = context;
             _maping = maping;

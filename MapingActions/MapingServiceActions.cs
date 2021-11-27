@@ -1,10 +1,11 @@
-﻿using CardManager.Models;
+﻿using CardManager.MapingActions.Interfaces;
+using CardManager.Models;
 using CardManager.Service.Models;
 using System.Linq;
 
 namespace CardManager.MapingActions
 {
-    public class MapingServiceActions
+    public class MapingServiceActions : IMapingServiceActions
     {
         public CategoryModel MapCategoryModelFromEntity(Category entity)
         {

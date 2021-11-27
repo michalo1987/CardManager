@@ -1,4 +1,5 @@
-﻿using CardManager.Models.ViewModels;
+﻿using CardManager.MapingActions.Interfaces;
+using CardManager.Models.ViewModels;
 using CardManager.Service.Interfaces;
 using CardManager.Service.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -6,7 +7,7 @@ using System.Linq;
 
 namespace CardManager.MapingActions
 {
-    public class MapingControllerActions
+    public class MapingControllerActions : IMapingControllerActions
     {
         private readonly IPublisherService _publisherService;
         private readonly ICategoryService _categoryService;
@@ -44,7 +45,7 @@ namespace CardManager.MapingActions
         public SelectListItem MapAuthorToSelectListItem(AuthorModel item)
             => new SelectListItem() { Value = $"{item.AuthorId}", Text = item.FullName };
 
-        public PublisherViewModel MapPublisherViewModelFromEntity(PublisherModel model)
+        public PublisherViewModel MapPublisherViewModelFromModel(PublisherModel model)
         {
             var publisherViewModel = new PublisherViewModel()
             {
@@ -56,7 +57,7 @@ namespace CardManager.MapingActions
             return publisherViewModel;
         }
 
-        public CategoryViewModel MapCategoryViewModelFromEntity(CategoryModel model)
+        public CategoryViewModel MapCategoryViewModelFromModel(CategoryModel model)
         {
             var categoryViewModel = new CategoryViewModel()
             {
@@ -67,7 +68,7 @@ namespace CardManager.MapingActions
             return categoryViewModel;
         }
 
-        public AuthorViewModel MapAuthorViewModelFromEntity(AuthorModel model)
+        public AuthorViewModel MapAuthorViewModelFromModel(AuthorModel model)
         {
             var authorViewModel = new AuthorViewModel()
             {
@@ -81,7 +82,7 @@ namespace CardManager.MapingActions
             return authorViewModel;
         }
 
-        public BookViewModel MapBookViewModelFromEntity(BookModel model)
+        public BookViewModel MapBookViewModelFromModel(BookModel model)
         {
             var bookViewModel = new BookViewModel()
             {
@@ -94,6 +95,48 @@ namespace CardManager.MapingActions
             };
 
             return bookViewModel;
+        }
+
+        public BookDetailsViewModel MapBookDetailsViewModelFromModel(BookDetailsModel model)
+        {
+            var bookDetailsViewModel = new BookDetailsViewModel()
+            {
+                DetailsExists = model.Exists,
+                Title = model.Title,
+                NumberOfChapters = model.NumberOfChapters,
+                NumberOfPages = model.NumberOfPages,
+                Weight = model.Weight
+            };
+
+            return bookDetailsViewModel;
+        }
+
+        public ConfirmDeleteBookViewModel MapConfirmDeleteBookViewModelFromModel(BookModel model)
+        {
+            var confirmDeleteBookViewModel = new ConfirmDeleteBookViewModel()
+            {
+                BookId = model.BookId,
+                CategoryName = model.CategoryName,
+                PublisherName = model.PublisherName,
+                Title = model.Title,
+                ISBN = model.ISBN,
+                Price = model.Price
+            };
+
+            return confirmDeleteBookViewModel;
+        }
+
+        public BookAuthorViewModel MapBookAuthorViewModelFromModel(BookAuthorModel model)
+        {
+            var bookAuthorViewModel = new BookAuthorViewModel()
+            {
+                BookId = model.BookId,
+                Title = model.Title,
+                BookAuthorList = model.AuthorList
+                    .Select(a => MapAuthorViewModelFromModel(a))
+            };
+
+            return bookAuthorViewModel;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using CardManager.MapingActions;
+﻿using CardManager.MapingActions.Interfaces;
 using CardManager.Models.ViewModels;
 using CardManager.Service.Interfaces;
 using CardManager.Service.Models;
@@ -15,9 +15,9 @@ namespace CardManager.Controllers
         private readonly IBookDetailService _bookDetailService;
         private readonly IBookAuthorService _bookAuthorService;
         private readonly IAuthorService _authorService;
-        private readonly MapingControllerActions _maping;
+        private readonly IMapingControllerActions _maping;
 
-        public BookController(IBookService bookService, IBookDetailService bookDetailService, IBookAuthorService bookAuthorService, IAuthorService authorService, MapingControllerActions maping)
+        public BookController(IBookService bookService, IBookDetailService bookDetailService, IBookAuthorService bookAuthorService, IAuthorService authorService, IMapingControllerActions maping)
         {
             _bookService = bookService;
             _bookDetailService = bookDetailService;
@@ -34,7 +34,7 @@ namespace CardManager.Controllers
 
             foreach (var model in bookModelList)
             {
-                var viewModel = _maping.MapBookViewModelFromEntity(model);
+                var viewModel = _maping.MapBookViewModelFromModel(model);
                 viewModel.BookAuthorList = model.AuthorList.Select(a => _maping.MapBookAuthorWithNamesOnly(a));
 
                 bookViewModelList.Add(viewModel);
@@ -116,15 +116,8 @@ namespace CardManager.Controllers
                 return NotFound($"Book with ID = {bookId} does not exists.");
             }
 
-            var viewModel = new BookDetailsViewModel()
-            {
-                BookId = bookId,
-                DetailsExists = bookDetails.Exists,
-                Title = bookDetails.Title,
-                NumberOfChapters = bookDetails.NumberOfChapters,
-                NumberOfPages = bookDetails.NumberOfPages,
-                Weight = bookDetails.Weight,
-            };
+            var viewModel = _maping.MapBookDetailsViewModelFromModel(bookDetails);
+            viewModel.BookId = bookId;
 
             return View(viewModel);
         }
@@ -171,15 +164,7 @@ namespace CardManager.Controllers
                 return NotFound($"Book with ID = {id} does not exists.");
             }
 
-            var viewModel = new ConfirmDeleteBookViewModel()
-            {
-                BookId = book.BookId,
-                CategoryName = book.CategoryName,
-                PublisherName = book.PublisherName,
-                Title = book.Title,
-                ISBN = book.ISBN,
-                Price = book.Price
-            };
+            var viewModel = _maping.MapConfirmDeleteBookViewModelFromModel(book);
 
             return View(viewModel);
         }
@@ -195,16 +180,10 @@ namespace CardManager.Controllers
 
             var availableAuthors = _authorService.GetAll();
 
-            var viewModel = new BookAuthorViewModel()
-            {
-                BookId = bookAuthor.BookId,
-                Title = bookAuthor.Title,
-                BookAuthorList = bookAuthor.AuthorList
-                    .Select(a => _maping.MapAuthorViewModelFromEntity(a)),
-                AvailableAuthorList = availableAuthors
-                    .Where(a => bookAuthor.AuthorList.Any(ba => ba.AuthorId == a.AuthorId) == false)
-                    .Select(a => _maping.MapAuthorToSelectListItem(a))
-            };
+            var viewModel = _maping.MapBookAuthorViewModelFromModel(bookAuthor);
+            viewModel.AvailableAuthorList = availableAuthors
+                .Where(a => bookAuthor.AuthorList.Any(ba => ba.AuthorId == a.AuthorId) == false)
+                .Select(a => _maping.MapAuthorToSelectListItem(a));
 
             return View(viewModel);
         }

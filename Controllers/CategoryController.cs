@@ -1,19 +1,18 @@
-﻿using CardManager.MapingActions;
+﻿using CardManager.MapingActions.Interfaces;
 using CardManager.Models.ViewModels;
 using CardManager.Service.Interfaces;
 using CardManager.Service.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
-
 namespace CardManager.Controllers
 {
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
-        private readonly MapingControllerActions _maping;
+        private readonly IMapingControllerActions _maping;
 
-        public CategoryController(ICategoryService categoryService, MapingControllerActions maping)
+        public CategoryController(ICategoryService categoryService, IMapingControllerActions maping)
         {
             _categoryService = categoryService;
             _maping = maping;
@@ -27,7 +26,7 @@ namespace CardManager.Controllers
 
             foreach (var model in catModelList)
             {
-                var viewModel = _maping.MapCategoryViewModelFromEntity(model);
+                var viewModel = _maping.MapCategoryViewModelFromModel(model);
                 catViewModelList.Add(viewModel);
             }
 
@@ -65,7 +64,7 @@ namespace CardManager.Controllers
                 return NotFound($"Category ID = {id} does not exists.");
             }
 
-            var viewModel = _maping.MapCategoryViewModelFromEntity(category);
+            var viewModel = _maping.MapCategoryViewModelFromModel(category);
 
             return View(viewModel);
         }

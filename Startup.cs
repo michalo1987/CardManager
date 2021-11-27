@@ -1,5 +1,6 @@
 using CardManager.Data;
 using CardManager.MapingActions;
+using CardManager.MapingActions.Interfaces;
 using CardManager.Service;
 using CardManager.Service.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -58,9 +59,8 @@ namespace CardManager
             services.AddScoped<IBookService, BookService>();
             services.AddScoped<IBookDetailService, BookDetailService>();
             services.AddScoped<IBookAuthorService, BookAuthorService>();
-
-            services.AddScoped<MapingControllerActions>();
-            services.AddScoped<MapingServiceActions>();
+            services.AddScoped<IMapingControllerActions, MapingControllerActions>();
+            services.AddScoped<IMapingServiceActions, MapingServiceActions>();
 
             services.AddControllersWithViews();
         }

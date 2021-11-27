@@ -1,5 +1,5 @@
 ﻿using CardManager.Data;
-using CardManager.MapingActions;
+using CardManager.MapingActions.Interfaces;
 using CardManager.Models;
 using CardManager.Service.Interfaces;
 using CardManager.Service.Models;
@@ -12,9 +12,9 @@ namespace CardManager.Service
     public class BookService : IBookService
     {
         public readonly ApplicationDbContext _context;
-        public readonly MapingServiceActions _maping;
+        public readonly IMapingServiceActions _maping;
 
-        public BookService(ApplicationDbContext context, MapingServiceActions maping)
+        public BookService(ApplicationDbContext context, IMapingServiceActions maping)
         {
             _context = context;
             _maping = maping;

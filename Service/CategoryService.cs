@@ -1,5 +1,5 @@
 ﻿using CardManager.Data;
-using CardManager.MapingActions;
+using CardManager.MapingActions.Interfaces;
 using CardManager.Models;
 using CardManager.Service.Interfaces;
 using CardManager.Service.Models;
@@ -12,9 +12,9 @@ namespace CardManager.Service
     public class CategoryService : ICategoryService
     {
         private readonly ApplicationDbContext _context;
-        private readonly MapingServiceActions _maping;
+        private readonly IMapingServiceActions _maping;
 
-        public CategoryService(ApplicationDbContext context, MapingServiceActions maping)
+        public CategoryService(ApplicationDbContext context, IMapingServiceActions maping)
         {
             _context = context;
             _maping = maping;
@@ -91,8 +91,9 @@ namespace CardManager.Service
                 catList.Add(new Category { Name = Guid.NewGuid().ToString() });
             }
             _context.Categories.AddRange(catList);
+            _context.SaveChanges();
 
-            return _context.SaveChanges() > 0;
+            return true;
         }
 
         public bool CreateMultiple5()
@@ -103,8 +104,9 @@ namespace CardManager.Service
                 catList.Add(new Category { Name = Guid.NewGuid().ToString() });
             }
             _context.Categories.AddRange(catList);
+            _context.SaveChanges();
 
-            return _context.SaveChanges() > 0;
+            return true;
         }
 
         public bool RemoveMultiple2()
@@ -112,7 +114,9 @@ namespace CardManager.Service
             var catList = _context.Categories.OrderByDescending(c => c.Id).Take(2).ToList();
             _context.Categories.RemoveRange(catList);
 
-            return _context.SaveChanges() > 0;
+            _context.SaveChanges();
+
+            return true;
         }
 
         public bool RemoveMultiple5()
@@ -120,7 +124,9 @@ namespace CardManager.Service
             var catList = _context.Categories.OrderByDescending(c => c.Id).Take(5).ToList();
             _context.Categories.RemoveRange(catList);
 
-            return _context.SaveChanges() > 0;
+            _context.SaveChanges();
+
+            return true;
         }
     }
 }

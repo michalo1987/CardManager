@@ -1,4 +1,4 @@
-﻿using CardManager.MapingActions;
+﻿using CardManager.MapingActions.Interfaces;
 using CardManager.Models.ViewModels;
 using CardManager.Service.Interfaces;
 using CardManager.Service.Models;
@@ -10,9 +10,9 @@ namespace CardManager.Controllers
     public class PublisherController : Controller
     {
         private readonly IPublisherService _publisherService;
-        private readonly MapingControllerActions _maping;
+        private readonly IMapingControllerActions _maping;
 
-        public PublisherController(IPublisherService publisherService, MapingControllerActions maping)
+        public PublisherController(IPublisherService publisherService, IMapingControllerActions maping)
         {
             _publisherService = publisherService;
             _maping = maping;
@@ -26,7 +26,7 @@ namespace CardManager.Controllers
 
             foreach (var model in pubModelList)
             {
-                var viewModel = _maping.MapPublisherViewModelFromEntity(model);
+                var viewModel = _maping.MapPublisherViewModelFromModel(model);
                 pubViewModelList.Add(viewModel);
             }
 
@@ -64,7 +64,7 @@ namespace CardManager.Controllers
                 return NotFound($"Publisher ID = {id} does not exists.");
             }
 
-            var viewModel = _maping.MapPublisherViewModelFromEntity(publisher);
+            var viewModel = _maping.MapPublisherViewModelFromModel(publisher);
 
             return View(viewModel); 
         }
