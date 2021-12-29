@@ -12,19 +12,27 @@ namespace CardManager.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly IEmailSender _emailSender;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IEmailSender emailSender)
+        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IEmailSender emailSender, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
+            _roleManager = roleManager;
         }
 
         [HttpGet]
-        public IActionResult Register(string returnurl = null)
+        public async Task<IActionResult> Register(string returnurl = null)
         {
+            if (!await _roleManager.RoleExistsAsync("Admin"))
+            {
+                await _roleManager.CreateAsync(new IdentityRole("Admin"));
+                await _roleManager.CreateAsync(new IdentityRole("User"));
+            }
+
             ViewData["ReturnUrl"] = returnurl;
             RegisterViewModel viewModel = new RegisterViewModel();
 
@@ -44,6 +52,8 @@ namespace CardManager.Controllers
 
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user, "User");
+
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

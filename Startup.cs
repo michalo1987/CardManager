@@ -46,7 +46,10 @@ namespace CardManager
                 opt.Lockout.MaxFailedAccessAttempts = 3;
                 opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(30);
             });
-
+            services.ConfigureApplicationCookie(opt =>
+            {
+                opt.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/UserManagement/AccessDenied");
+            });
             services.AddAuthentication().AddFacebook(options =>
             {
                 options.AppId = "610862979905265";

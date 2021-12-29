@@ -33,7 +33,6 @@ namespace CardManager.Controllers
             return View(viewModel);
         }
 
-        [Authorize]
         public IActionResult CardManager()
         {
             return RedirectToAction("Index");
