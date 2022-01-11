@@ -78,5 +78,17 @@ namespace CardManager.MapingActions
                     .ToList()
             };
         }
+
+        public ApplicationUserModel MapApplicationUserModelFromEntity(ApplicationUser entity)
+        {
+            return new ApplicationUserModel()
+            {
+                Id = entity.Id,
+                RoleId = entity.RoleId,
+                UserName = entity.UserName,
+                Email = entity.Email,
+                Role = entity.Role
+            };
+        }
     }
 }

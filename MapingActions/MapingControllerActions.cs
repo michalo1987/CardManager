@@ -138,5 +138,19 @@ namespace CardManager.MapingActions
 
             return bookAuthorViewModel;
         }
+
+        public ApplicationUserViewModel MapApplicationUserViewModelFromModel(ApplicationUserModel model)
+        {
+            var applicationUserViewModel = new ApplicationUserViewModel()
+            {
+                UserId = model.Id,
+                RoleId = model.RoleId,
+                UserName = model.UserName,
+                Email = model.Email,
+                Role = model.Role
+            };
+
+            return applicationUserViewModel;
+        }
     }
 }

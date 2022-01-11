@@ -16,5 +16,7 @@ namespace CardManager.MapingActions.Interfaces
         BookDetailsModel MapBookDetailsModelFromEntity(Book entity);
 
         BookAuthorModel MapBookAuthorModelFromEntity(Book entity);
+
+        ApplicationUserModel MapApplicationUserModelFromEntity(ApplicationUser entity);
     }
 }

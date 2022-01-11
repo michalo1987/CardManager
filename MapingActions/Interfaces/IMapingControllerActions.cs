@@ -25,5 +25,7 @@ namespace CardManager.MapingActions.Interfaces
         ConfirmDeleteBookViewModel MapConfirmDeleteBookViewModelFromModel(BookModel model);
 
         BookAuthorViewModel MapBookAuthorViewModelFromModel(BookAuthorModel model);
+
+        ApplicationUserViewModel MapApplicationUserViewModelFromModel(ApplicationUserModel model);
     }
 }
