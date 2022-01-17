@@ -1,5 +1,6 @@
 ﻿using CardManager.Models;
 using CardManager.Service.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace CardManager.MapingActions.Interfaces
 {
@@ -18,5 +19,7 @@ namespace CardManager.MapingActions.Interfaces
         BookAuthorModel MapBookAuthorModelFromEntity(Book entity);
 
         ApplicationUserModel MapApplicationUserModelFromEntity(ApplicationUser entity);
+
+        RoleModel MapRoleModelFromEntity(IdentityRole entity);
     }
 }

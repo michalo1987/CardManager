@@ -48,7 +48,7 @@ namespace CardManager
             });
             services.ConfigureApplicationCookie(opt =>
             {
-                opt.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/User/AccessDenied");
+                opt.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/Home/AccessDenied");
             });
             services.AddAuthentication().AddFacebook(options =>
             {
@@ -65,6 +65,7 @@ namespace CardManager
             services.AddScoped<IMapingControllerActions, MapingControllerActions>();
             services.AddScoped<IMapingServiceActions, MapingServiceActions>();
             services.AddScoped<IApplicationUserService, ApplicationUserService>();
+            services.AddScoped<IRoleService, RoleService>();
 
             services.AddControllersWithViews();
         }

@@ -27,5 +27,7 @@ namespace CardManager.MapingActions.Interfaces
         BookAuthorViewModel MapBookAuthorViewModelFromModel(BookAuthorModel model);
 
         ApplicationUserViewModel MapApplicationUserViewModelFromModel(ApplicationUserModel model);
+
+        RoleViewModel MapRoleViewModelFromModel(RoleModel model);
     }
 }

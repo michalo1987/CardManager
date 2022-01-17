@@ -1,7 +1,6 @@
 ﻿using CardManager.Models;
 using CardManager.Models.ViewModels;
 using CardManager.Service.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -36,6 +35,11 @@ namespace CardManager.Controllers
         public IActionResult CardManager()
         {
             return RedirectToAction("Index");
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

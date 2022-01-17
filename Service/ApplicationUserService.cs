@@ -20,28 +20,21 @@ namespace CardManager.Service
 
         public IEnumerable<ApplicationUserModel> GetAll()
         {
-            var userModelList = new List<ApplicationUserModel>();
-            var userList = _context.ApplicationUser.ToList();
-            var userRole = _context.UserRoles.ToList();
-            var roles = _context.Roles.ToList();
+            var userList = _context.ApplicationUser;
+            var userRole = _context.UserRoles;
+            var roles = _context.Roles;
 
             foreach (var model in userList)
             {
-                var role = userRole.FirstOrDefault(u => u.UserId == model.Id);
-                if (role == null)
+                var role = userRole.SingleOrDefault(u => u.UserId == model.Id);
+                if (role != null)
                 {
-                    model.Role = "None";
-                }
-                else
-                {
-                    model.Role = roles.FirstOrDefault(r => r.Id == role.RoleId).Name;
+                    model.Role = roles.Single(r => r.Id == role.RoleId).Name;
                 }
 
                 var userModel = _maping.MapApplicationUserModelFromEntity(model);
-                userModelList.Add(userModel);
+                yield return userModel;
             }
-
-            return userModelList;
         }
     }
 }

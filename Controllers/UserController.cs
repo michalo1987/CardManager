@@ -37,11 +37,5 @@ namespace CardManager.Controllers
 
             return View(userViewModelList);
         }
-
-        [AllowAnonymous]
-        public IActionResult AccessDenied()
-        {
-            return View();
-        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using CardManager.MapingActions.Interfaces;
 using CardManager.Models;
 using CardManager.Service.Models;
+using Microsoft.AspNetCore.Identity;
 using System.Linq;
 
 namespace CardManager.MapingActions
@@ -83,11 +84,19 @@ namespace CardManager.MapingActions
         {
             return new ApplicationUserModel()
             {
-                Id = entity.Id,
                 RoleId = entity.RoleId,
                 UserName = entity.UserName,
                 Email = entity.Email,
                 Role = entity.Role
+            };
+        }
+
+        public RoleModel MapRoleModelFromEntity(IdentityRole entity)
+        {
+            return new RoleModel()
+            {
+                RoleId = entity.Id,
+                RoleName = entity.Name
             };
         }
     }

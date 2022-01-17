@@ -143,7 +143,6 @@ namespace CardManager.MapingActions
         {
             var applicationUserViewModel = new ApplicationUserViewModel()
             {
-                UserId = model.Id,
                 RoleId = model.RoleId,
                 UserName = model.UserName,
                 Email = model.Email,
@@ -151,6 +150,17 @@ namespace CardManager.MapingActions
             };
 
             return applicationUserViewModel;
+        }
+
+        public RoleViewModel MapRoleViewModelFromModel(RoleModel model)
+        {
+            var roleViewModel = new RoleViewModel()
+            {
+                RoleId = model.RoleId,
+                RoleName = model.RoleName
+            };
+
+            return roleViewModel;
         }
     }
 }

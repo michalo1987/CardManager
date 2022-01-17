@@ -1,0 +1,58 @@
+﻿@model IEnumerable<RoleViewModel>
+
+@{
+    ViewData["Title"] = "Roles";
+    Layout = "_Layout";
+}
+
+<br />
+<br />
+<div class="container">
+    <div class="border p-4 bg-white">
+        <div class="row">
+            <div class="col-10">
+                <h2 class="text-danger">Roles List</h2>
+            </div>
+            <div class="col-2 text-right">
+                <a asp-controller="Role" asp-action="New" class="btn btn-outline-danger form-control">Create New Role</a>
+            </div>
+        </div>
+        <br />
+        <div>
+            @if (Model.Any())
+            {
+                <table class="table table">
+                    <tr class="table">
+                        <th>
+                            ID
+                        </th>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                        </th>
+                    </tr>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @item.RoleId
+                            </td>
+                            <td>
+                                @item.RoleName
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            }
+            else
+            {
+                <p>No role exists...</p>
+            }
+        </div>
+    </div>
+</div>
+<br />
+<br />
