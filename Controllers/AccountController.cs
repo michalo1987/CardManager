@@ -103,6 +103,11 @@ namespace CardManager.Controllers
         [HttpGet]
         public IActionResult Login(string returnurl = null)
         {
+            if(User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             ViewData["ReturnUrl"] = returnurl;
 
             return View();

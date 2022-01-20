@@ -1,0 +1,41 @@
+﻿@model RoleViewModel
+
+@{
+    ViewData["Title"] = "Edit Role";
+    Layout = "_Layout";
+}
+
+<form asp-controller="Role" asp-action="Edit" method="post">
+    <div class="container">
+        <div class="row p-3 border">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="RoleId" />
+            <div class="col-12 border-bottom">
+                <h2 class="text-danger">@ViewData["Title"]</h2>
+            </div>
+            <div class="col-8 pt-4">
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="RoleName"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="RoleName" class="form-control" />
+                        <span asp-validation-for="RoleName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row mt-4 mb-3">
+                    <div class="col-4 offset-4">
+                        <button type="submit" class="btn btn-danger form-control">Update</button>
+                    </div>
+                    <div class="col-4">
+                        <a asp-controller="Role" asp-action="Index" class="btn btn-outline-danger form-control">Back to List</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

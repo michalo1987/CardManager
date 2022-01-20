@@ -157,7 +157,8 @@ namespace CardManager.MapingActions
             var roleViewModel = new RoleViewModel()
             {
                 RoleId = model.RoleId,
-                RoleName = model.RoleName
+                RoleName = model.RoleName,
+                NormalizedName = model.NormalizedName
             };
 
             return roleViewModel;

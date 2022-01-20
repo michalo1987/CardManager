@@ -19,6 +19,19 @@ namespace CardManager.Service
             _maping = maping;
         }
 
+        public RoleModel CreateRole(string roleName)
+        {
+            var role = new IdentityRole()
+            {
+                Name = roleName
+            };
+
+            _contex.Roles.Add(role);
+            _contex.SaveChanges();
+
+            return _maping.MapRoleModelFromEntity(role);
+        }
+
         public IEnumerable<RoleModel> GetAll()
         {
             var roleModelList = new List<RoleModel>();
@@ -31,6 +44,29 @@ namespace CardManager.Service
             }
 
             return roleModelList;
+        }
+
+        public RoleModel GetRole(string roleId)
+        {
+            var role = _contex.Roles
+                .FirstOrDefault(r => r.Id == roleId);
+
+            return role != null
+                ? _maping.MapRoleModelFromEntity(role)
+                : null;
+        }
+
+        public RoleModel UpdateRole(RoleModel model)
+        {
+            var role = _contex.Roles
+                .SingleOrDefault(r => r.Id == model.RoleId);
+
+            role.Name = model.RoleName;
+
+            _contex.Roles.Update(role);
+            _contex.SaveChanges();
+
+            return model;
         }
     }
 }

@@ -96,7 +96,8 @@ namespace CardManager.MapingActions
             return new RoleModel()
             {
                 RoleId = entity.Id,
-                RoleName = entity.Name
+                RoleName = entity.Name,
+                NormalizedName = entity.NormalizedName
             };
         }
     }

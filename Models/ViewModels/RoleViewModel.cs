@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace CardManager.Models.ViewModels
 {
@@ -9,6 +6,9 @@ namespace CardManager.Models.ViewModels
     {
         public string RoleId { get; set; }
 
+        [Required, StringLength(25)]
         public string RoleName { get; set; }
+
+        public string NormalizedName { get; set; }
     }
 }
